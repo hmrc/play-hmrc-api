@@ -28,7 +28,7 @@ case object ErrorUnauthorizedLowCL extends ErrorResponse(401, "LOW_CONFIDENCE_LE
 
 case object ErrorNotFound extends ErrorResponse(404, "NOT_FOUND", "Resource was not found")
 
-case class ErrorGenericBadRequest(msg : String = "Bad Request") extends ErrorResponse(400, "BAD_REQUEST", "Bad Request")
+case class ErrorGenericBadRequest(msg : String = "Bad Request") extends ErrorResponse(400, "BAD_REQUEST", msg)
 
 object ErrorGenericBadRequest {
 
