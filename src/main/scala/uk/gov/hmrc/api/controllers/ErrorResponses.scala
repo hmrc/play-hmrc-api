@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.api.controllers
 
+
 abstract class ErrorResponse( val httpStatusCode: Int,
                               val errorCode: String,
                               val message: String)
@@ -23,11 +24,21 @@ abstract class ErrorResponse( val httpStatusCode: Int,
 
 case object ErrorUnauthorized extends ErrorResponse(401, "UNAUTHORIZED", "Bearer token is missing or not authorized")
 
-case object ErrorUnauthorizedLowCL extends ErrorResponse(401, "UNAUTHORIZED", "Confidence Level on account does not allow access")
+case object ErrorUnauthorizedLowCL extends ErrorResponse(401, "LOW_CONFIDENCE_LEVEL", "Confidence Level on account does not allow access")
 
 case object ErrorNotFound extends ErrorResponse(404, "NOT_FOUND", "Resource was not found")
 
-case object ErrorGenericBadRequest extends ErrorResponse(400, "BAD_REQUEST", "Bad Request")
+case class ErrorGenericBadRequest(msg : String = "Bad Request") extends ErrorResponse(400, "BAD_REQUEST", "Bad Request")
+
+object ErrorGenericBadRequest {
+
+  import play.api.data.validation.ValidationError
+  import play.api.libs.json.JsPath
+  import play.api.libs.json.JsError
+
+  def apply(errors : Seq[(JsPath, Seq[ValidationError])]) =
+    new ErrorGenericBadRequest(JsError.toFlatJson(errors).as[String])
+}
 
 case object ErrorAcceptHeaderInvalid extends ErrorResponse(406, "ACCEPT_HEADER_INVALID", "The accept header is missing or invalid")
 
