@@ -16,10 +16,13 @@
 
 package uk.gov.hmrc.api.config
 
+import play.api.mvc.{Handler, RequestHeader}
 import play.api.{Application, GlobalSettings, Logger}
 import uk.gov.hmrc.api.connector.ServiceLocatorConnector
 import uk.gov.hmrc.play.config.RunMode
 import uk.gov.hmrc.play.http.HeaderCarrier
+
+import scala.util.matching.Regex
 
 trait ServiceLocatorRegistration extends GlobalSettings with RunMode {
   self : ServiceLocatorConfig =>
@@ -35,4 +38,17 @@ trait ServiceLocatorRegistration extends GlobalSettings with RunMode {
       case false => Logger.warn("Registration in Service Locator is disabled")
     }
   }
+
+  override def onRouteRequest(request: RequestHeader): Option[Handler] = {
+    val overrideRequest = router.fold(request) {
+      router => request.headers.get(router._1) match {
+        case Some(value) =>
+          val found = new Regex(router._2) findFirstIn value
+          found.fold(request) { _ => Logger.info(s"Overriding request due to $router");request.copy(path = router._3 + request.path) }
+        case _ => request
+      }
+    }
+    super.onRouteRequest(overrideRequest)
+  }
+
 }

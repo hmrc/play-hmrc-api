@@ -31,12 +31,10 @@ trait Auditor extends AppName {
   lazy val auditType : String = "ServiceResponseSent"
 
   protected def audit(service: String, details: Map[String, String])(implicit hc: HeaderCarrier, ec : ExecutionContext) = {
-    def auditResponse(): Unit = {
-      auditConnector.sendEvent(
-        DataEvent(appName, auditType,
-          tags = Map("transactionName" -> service),
-          detail = details))
-    }
+    auditConnector.sendEvent(
+      DataEvent(appName, auditType,
+        tags = Map("transactionName" -> service),
+        detail = details))
   }
 
   def withAudit[T](service: String, details: Map[String, String])(func: Future[T])(implicit hc: HeaderCarrier, ec : ExecutionContext) = {
