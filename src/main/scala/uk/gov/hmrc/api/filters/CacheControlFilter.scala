@@ -20,13 +20,13 @@ import play.api.Play
 import play.api.http.HttpVerbs.{GET => GET_METHOD}
 import play.api.mvc.{Filter, RequestHeader, Result}
 import play.mvc.Http.HeaderNames
-
-import scala.collection.JavaConverters._
+import uk.gov.hmrc.play.filters.MicroserviceFilterSupport
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.matching.Regex
+import scala.collection.JavaConverters._
 
-abstract class CacheControlFilter extends Filter {
+abstract class CacheControlFilter extends Filter with MicroserviceFilterSupport {
   val cachedEndPoints: Map[String, Int]
 
   final def apply(f: RequestHeader => Future[Result])(requestHeader: RequestHeader): Future[Result] = {

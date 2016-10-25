@@ -27,6 +27,7 @@ import play.api.http.HttpVerbs.{GET,POST}
 import play.api.mvc.{Result, _}
 import play.api.test.FakeRequest
 import play.api.test.{FakeApplication, _}
+import uk.gov.hmrc.play.test.WithFakeApplication
 import scala.concurrent.Future
 
 class CacheControlFilterSpec extends WordSpecLike with Matchers with MockitoSugar with ScalaFutures {
@@ -91,13 +92,22 @@ class CacheControlFilterSpec extends WordSpecLike with Matchers with MockitoSuga
   }
 
   "Creating the filter from config" should {
-
-    "load the correct values" in new WithApplication(FakeApplication(additionalConfiguration = Map("apiCaching" -> Map("/zark/snork" -> 1234, "/splish/splash" -> 5678)))) {
-      CacheControlFilter.fromConfig(CacheControlFilter.configKey).cachedEndPoints should be (Map("/zark/snork" -> 1234, "/splish/splash" -> 5678))
-    }
-
     "throw an exception on missing config" in  {
       an [RuntimeException] should be thrownBy CacheControlFilter.fromConfig(CacheControlFilter.configKey).cachedEndPoints
     }
   }
+
+}
+
+class CacheControlFilterWithAppSpec extends WordSpecLike with Matchers with MockitoSugar with ScalaFutures with WithFakeApplication {
+
+  val additionalConfiguration: Map[String, Any] = Map("apiCaching" -> Map("/zark/snork" -> 1234, "/splish/splash" -> 5678))
+  override lazy val fakeApplication = FakeApplication(additionalConfiguration = additionalConfiguration)
+
+  "Creating the filter from config" should {
+
+    "load the correct values" in  {
+        CacheControlFilter.fromConfig(CacheControlFilter.configKey).cachedEndPoints should be(Map("/zark/snork" -> 1234, "/splish/splash" -> 5678))
+      }
+    }
 }
