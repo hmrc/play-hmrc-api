@@ -31,7 +31,7 @@ private object AppDependencies {
   val compile = Seq(
     ws,
     "com.typesafe.play" %% "play" % PlayVersion.current % "provided",
-    "uk.gov.hmrc" %% "microservice-bootstrap" % "5.1.0" % "provided",
+    "uk.gov.hmrc" %% "microservice-bootstrap" % "5.3.0" % "provided",
     "uk.gov.hmrc" %% "play-config" % "3.0.0" % "provided"
   )
 
