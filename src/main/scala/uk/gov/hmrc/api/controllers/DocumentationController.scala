@@ -16,11 +16,12 @@
 
 package uk.gov.hmrc.api.controllers
 
-import controllers.AssetsBuilder
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.microservice.controller.BaseController
+import controllers.AssetsBuilder
+import play.api.http.LazyHttpErrorHandler
 
-trait DocumentationController extends AssetsBuilder with BaseController {
+object DocumentationController extends AssetsBuilder(LazyHttpErrorHandler) {
+
   def documentation(version: String, endpointName: String): Action[AnyContent] = {
     super.at(s"/public/api/documentation/$version", s"${endpointName.replaceAll(" ", "-")}.xml")
   }
@@ -29,5 +30,3 @@ trait DocumentationController extends AssetsBuilder with BaseController {
     super.at(s"/public/api", "definition.json")
   }
 }
-
-object DocumentationController extends DocumentationController

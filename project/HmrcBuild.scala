@@ -1,53 +1,58 @@
+import play.sbt.PlayImport._
 import sbt.Keys._
 import sbt._
-import uk.gov.hmrc.SbtAutoBuildPlugin
-import uk.gov.hmrc.versioning.SbtGitVersioning
 
 object HmrcBuild extends Build {
 
-  import SbtAutoBuildPlugin._
-  
-  val nameApp = "play-hmrc-api"
+  import uk.gov.hmrc._
+  import uk.gov.hmrc.versioning.SbtGitVersioning
 
-  val appDependencies = {
-    import Dependencies._
+  val appName = "play-hmrc-api"
 
-    Seq(
-      Compile.microserviceBootstrap,
-      Compile.playConfig,
-
-      Test.hmrctest,
-      Test.scalaTest,
-      Test.pegdown
-    )
-  }
-
-  lazy val simpleReactiveMongo = Project(nameApp, file("."))
+  lazy val library = (project in file("."))
     .enablePlugins(SbtAutoBuildPlugin, SbtGitVersioning)
     .settings(
-      autoSourceHeader := false,
-      scalaVersion := "2.11.8",
-      libraryDependencies ++= appDependencies,
-      resolvers += Resolver.typesafeRepo("releases"),
-      crossScalaVersions := Seq("2.11.8")
+      name := appName,
+      scalaVersion := "2.11.7",
+      crossScalaVersions := Seq("2.11.7"),
+      libraryDependencies ++= AppDependencies(),
+      resolvers := Seq(
+        Resolver.bintrayRepo("hmrc", "releases"),
+        "typesafe-releases" at "http://repo.typesafe.com/typesafe/releases/"
+      )
     )
 }
 
-object Dependencies {
+private object AppDependencies {
 
-  object Compile {
-    val microserviceBootstrap = "uk.gov.hmrc" %% "microservice-bootstrap" % "4.2.1" % "provided"
-    val playConfig = "uk.gov.hmrc" %% "play-config" % "2.0.1" % "provided"
+  import play.sbt.PlayImport._
+  import play.core.PlayVersion
+
+  val compile = Seq(
+    ws,
+    "com.typesafe.play" %% "play" % PlayVersion.current % "provided",
+    "uk.gov.hmrc" %% "microservice-bootstrap" % "5.1.0" % "provided",
+    "uk.gov.hmrc" %% "play-config" % "3.0.0" % "provided"
+  )
+
+  trait TestDependencies {
+    lazy val scope: String = "test"
+    lazy val test: Seq[ModuleID] = ???
   }
 
-  sealed abstract class Test(scope: String) {
-    val hmrctest = "uk.gov.hmrc" %% "hmrctest" % "1.6.0" % scope
-    val scalaTest = "org.scalatest" %% "scalatest" % "2.2.6" % scope
-    val pegdown = "org.pegdown" % "pegdown" % "1.6.0" % scope
+  object Test {
+    def apply() = new TestDependencies {
+      override lazy val test = Seq(
+        "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
+        "org.scalatest" %% "scalatest" % "2.2.6" % scope,
+        "org.pegdown" % "pegdown" % "1.5.0" % scope,
+        "com.github.tomakehurst" % "wiremock" % "2.2.2" % scope excludeAll ExclusionRule(organization = "org.apache.httpcomponents"),
+        "uk.gov.hmrc" %% "hmrctest" % "2.0.0" % scope,
+        "org.mockito" % "mockito-all" % "1.9.5" % "test"
+      )
+    }.test
   }
 
-  object Test extends Test("test")
-
-  object IntegrationTest extends Test("it")
-
+  def apply() = compile ++ Test()
 }
+
