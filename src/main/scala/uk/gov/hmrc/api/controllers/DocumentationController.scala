@@ -18,15 +18,16 @@ package uk.gov.hmrc.api.controllers
 
 import play.api.mvc.{Action, AnyContent}
 import controllers.AssetsBuilder
-import play.api.http.LazyHttpErrorHandler
+import play.api.http.{HttpErrorHandler, LazyHttpErrorHandler}
 
-object DocumentationController extends AssetsBuilder(LazyHttpErrorHandler) {
+class DocumentationController(errorHandler:HttpErrorHandler) extends AssetsBuilder(errorHandler) {
+    def documentation(version: String, endpointName: String): Action[AnyContent] = {
+      super.at(s"/public/api/documentation/$version", s"${endpointName.replaceAll(" ", "-")}.xml")
+    }
 
-  def documentation(version: String, endpointName: String): Action[AnyContent] = {
-    super.at(s"/public/api/documentation/$version", s"${endpointName.replaceAll(" ", "-")}.xml")
-  }
-
-  def definition() = {
-    super.at(s"/public/api", "definition.json")
-  }
+    def definition() = {
+      super.at(s"/public/api", "definition.json")
+    }
 }
+
+object DocumentationController extends DocumentationController(LazyHttpErrorHandler)
