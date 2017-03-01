@@ -13,8 +13,8 @@ object HmrcBuild extends Build {
     .enablePlugins(SbtAutoBuildPlugin, SbtGitVersioning)
     .settings(
       name := appName,
-      scalaVersion := "2.11.7",
-      crossScalaVersions := Seq("2.11.7"),
+      scalaVersion := "2.11.8",
+      crossScalaVersions := Seq("2.11.8"),
       libraryDependencies ++= AppDependencies(),
       resolvers := Seq(
         Resolver.bintrayRepo("hmrc", "releases"),
@@ -31,8 +31,8 @@ private object AppDependencies {
   val compile = Seq(
     ws,
     "com.typesafe.play" %% "play" % PlayVersion.current % "provided",
-    "uk.gov.hmrc" %% "microservice-bootstrap" % "5.3.0" % "provided",
-    "uk.gov.hmrc" %% "play-config" % "3.0.0" % "provided"
+    "uk.gov.hmrc" %% "microservice-bootstrap" % "5.12.0" % "provided",
+    "uk.gov.hmrc" %% "play-config" % "4.2.0" % "provided"
   )
 
   trait TestDependencies {
@@ -47,7 +47,7 @@ private object AppDependencies {
         "org.scalatest" %% "scalatest" % "2.2.6" % scope,
         "org.pegdown" % "pegdown" % "1.5.0" % scope,
         "com.github.tomakehurst" % "wiremock" % "2.2.2" % scope excludeAll ExclusionRule(organization = "org.apache.httpcomponents"),
-        "uk.gov.hmrc" %% "hmrctest" % "2.0.0" % scope,
+        "uk.gov.hmrc" %% "hmrctest" % "2.3.0" % scope,
         "org.mockito" % "mockito-all" % "1.9.5" % "test"
       )
     }.test
