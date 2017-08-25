@@ -1,32 +1,9 @@
-import play.sbt.PlayImport._
-import sbt.Keys._
 import sbt._
 
-object HmrcBuild extends Build {
+object AppDependencies {
 
-  import uk.gov.hmrc._
-  import uk.gov.hmrc.versioning.SbtGitVersioning
-
-  val appName = "play-hmrc-api"
-
-  lazy val library = (project in file("."))
-    .enablePlugins(SbtAutoBuildPlugin, SbtGitVersioning)
-    .settings(
-      name := appName,
-      scalaVersion := "2.11.8",
-      crossScalaVersions := Seq("2.11.8"),
-      libraryDependencies ++= AppDependencies(),
-      resolvers := Seq(
-        Resolver.bintrayRepo("hmrc", "releases"),
-        "typesafe-releases" at "http://repo.typesafe.com/typesafe/releases/"
-      )
-    )
-}
-
-private object AppDependencies {
-
-  import play.sbt.PlayImport._
   import play.core.PlayVersion
+  import play.sbt.PlayImport._
 
   val compile = Seq(
     ws,
