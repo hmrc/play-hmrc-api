@@ -8,6 +8,7 @@ lazy val library = (project in file("."))
     libraryDependencies ++= AppDependencies(),
     resolvers := Seq(
       Resolver.bintrayRepo("hmrc", "releases"),
-      "typesafe-releases" at "http://repo.typesafe.com/typesafe/releases/"
+      "typesafe-releases" at "http://repo.typesafe.com/typesafe/releases/",
+      Resolver.jcenterRepo
     )
   )
