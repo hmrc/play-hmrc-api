@@ -20,9 +20,9 @@ import play.api.mvc.{Handler, RequestHeader}
 import play.api.{Application, GlobalSettings, Logger}
 import uk.gov.hmrc.api.connector.ServiceLocatorConnector
 import uk.gov.hmrc.play.config.RunMode
-import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.util.matching.Regex
+import uk.gov.hmrc.http.HeaderCarrier
 
 trait ServiceLocatorRegistration extends GlobalSettings with RunMode {
   self : ServiceLocatorConfig =>

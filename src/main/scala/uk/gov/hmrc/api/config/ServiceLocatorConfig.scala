@@ -27,9 +27,9 @@ trait ServiceLocatorConfig extends ServicesConfig {
   lazy val regex = current.configuration.getString(s"router.regex")
   lazy val prefix = current.configuration.getString(s"router.prefix")
 
-  lazy val router = {
+  lazy val router: Option[(String, String, String)] = {
     (header, regex, prefix) match {
-      case (Some(a:String), Some(b:String), Some(c:String)) => Some(a, b, c)
+      case (Some(a:String), Some(b:String), Some(c:String)) => Some((a, b, c))
       case _ => None
     }
   }
