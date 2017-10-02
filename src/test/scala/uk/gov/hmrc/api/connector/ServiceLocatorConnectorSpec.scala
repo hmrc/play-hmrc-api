@@ -16,24 +16,26 @@
 
 package uk.gov.hmrc.api.connector
 
+import org.mockito.Matchers.{any, eq => eqs}
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mock.MockitoSugar
+import play.api.libs.json.Writes
 import uk.gov.hmrc.api.domain.Registration
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpPost, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpPost, HttpReads, HttpResponse}
 import uk.gov.hmrc.play.test.UnitSpec
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class ServiceLocatorConnectorSpec
     extends UnitSpec with MockitoSugar with ScalaFutures {
 
   trait Setup {
-    implicit val hc = HeaderCarrier()
+    implicit val hc: HeaderCarrier = HeaderCarrier()
     val serviceLocatorException = new RuntimeException
 
-    val connector = new ServiceLocatorConnector {
-      override val http = mock[HttpPost]
+    val connector: ServiceLocatorConnector = new ServiceLocatorConnector {
+      override val http: HttpPost = mock[HttpPost]
       override val appUrl: String = "http://api-microservice-template.service"
       override val appName: String = "api-microservice-template"
       override val serviceUrl: String = "https://SERVICE_LOCATOR"
@@ -52,15 +54,23 @@ class ServiceLocatorConnectorSpec
                      serviceUrl = "http://api-microservice-template.service",
                      metadata = Some(Map("third-party-api" -> "true")))
 
-      when(connector.http.POST(s"${connector.serviceUrl}/registration",
-                               registration,
-                               Seq("Content-Type" -> "application/json")))
+      when(connector.http.POST(
+        eqs(s"${connector.serviceUrl}/registration"),
+        eqs(registration),
+        eqs(Seq("Content-Type" -> "application/json"))
+      )(
+        any[Writes[Registration]], any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext]
+      ))
         .thenReturn(Future.successful(HttpResponse(200)))
 
       connector.register.futureValue shouldBe true
-      verify(connector.http).POST("https://SERVICE_LOCATOR/registration",
-                                  registration,
-                                  Seq("Content-Type" -> "application/json"))
+      verify(connector.http).POST(
+        eqs("https://SERVICE_LOCATOR/registration"),
+        eqs(registration),
+        eqs(Seq("Content-Type" -> "application/json"))
+      )(
+          any[Writes[Registration]], any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext]
+        )
       verify(connector.handlerOK).apply()
       verify(connector.handlerError, never).apply(serviceLocatorException)
     }
@@ -71,15 +81,23 @@ class ServiceLocatorConnectorSpec
         Registration(serviceName = "api-microservice-template",
                      serviceUrl = "http://api-microservice-template.service",
                      metadata = Some(Map("third-party-api" -> "true")))
-      when(connector.http.POST(s"${connector.serviceUrl}/registration",
-                               registration,
-                               Seq("Content-Type" -> "application/json")))
+      when(connector.http.POST(
+        eqs(s"${connector.serviceUrl}/registration"),
+        eqs(registration),
+        eqs(Seq("Content-Type" -> "application/json"))
+      )(
+        any[Writes[Registration]], any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
+      )
         .thenReturn(Future.failed(serviceLocatorException))
 
       connector.register.futureValue shouldBe false
-      verify(connector.http).POST("https://SERVICE_LOCATOR/registration",
-                                  registration,
-                                  Seq("Content-Type" -> "application/json"))
+      verify(connector.http).POST(
+        eqs("https://SERVICE_LOCATOR/registration"),
+        eqs(registration),
+        eqs(Seq("Content-Type" -> "application/json"))
+      )(
+        any[Writes[Registration]], any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext]
+      )
       verify(connector.handlerOK, never).apply()
       verify(connector.handlerError).apply(serviceLocatorException)
     }
