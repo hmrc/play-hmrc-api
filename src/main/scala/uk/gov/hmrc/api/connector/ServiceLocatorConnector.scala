@@ -19,7 +19,7 @@ package uk.gov.hmrc.api.connector
 import play.api.Logger
 import uk.gov.hmrc.api.config.ServiceLocatorConfig
 import uk.gov.hmrc.api.domain.Registration
-import uk.gov.hmrc.http.{HeaderCarrier, HttpPost}
+import uk.gov.hmrc.http.{CorePost, HeaderCarrier}
 import uk.gov.hmrc.play.config.AppName
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -32,7 +32,7 @@ trait ServiceLocatorConnector {
   val handlerOK: () => Unit
   val handlerError: Throwable => Unit
   val metadata: Option[Map[String, String]]
-  val http: HttpPost
+  val http: CorePost
 
   def register(implicit hc: HeaderCarrier): Future[Boolean] = {
     val registration = Registration(appName, appUrl, metadata)
@@ -61,7 +61,7 @@ sealed trait ServiceLocatorConnectorConfig extends ServiceLocatorConnector with 
 }
 
 object ServiceLocatorConnector {
-  def apply(httpPost: HttpPost): ServiceLocatorConnector = new ServiceLocatorConnectorConfig{
-    override val http: HttpPost = httpPost
+  def apply(httpPost: CorePost): ServiceLocatorConnector = new ServiceLocatorConnectorConfig{
+    override val http: CorePost = httpPost
   }
 }
