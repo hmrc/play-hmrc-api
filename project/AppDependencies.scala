@@ -20,11 +20,9 @@ object AppDependencies {
     def apply() = new TestDependencies {
       override lazy val test = Seq(
         "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
-        "org.scalatest" %% "scalatest" % "2.2.6" % scope,
-        "org.pegdown" % "pegdown" % "1.5.0" % scope,
-        "com.github.tomakehurst" % "wiremock" % "2.2.2" % scope excludeAll ExclusionRule(organization = "org.apache.httpcomponents"),
-        "uk.gov.hmrc" %% "hmrctest" % "2.3.0" % scope,
-        "org.mockito" % "mockito-all" % "1.9.5" % "test"
+        "com.github.tomakehurst" % "wiremock" % "2.9.0" % scope,
+        "uk.gov.hmrc" %% "hmrctest" % "3.0.0" % scope,
+        "org.mockito" % "mockito-core" % "2.11.0" % "test"
       )
     }.test
   }

@@ -16,13 +16,13 @@
 
 package uk.gov.hmrc.api.connector
 
-import org.mockito.Matchers.{any, eq => eqs}
+import org.mockito.ArgumentMatchers.{any, eq => eqs}
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mock.MockitoSugar
+import org.scalatest.mockito.MockitoSugar
 import play.api.libs.json.Writes
 import uk.gov.hmrc.api.domain.Registration
-import uk.gov.hmrc.http.{HeaderCarrier, HttpPost, HttpReads, HttpResponse}
+import uk.gov.hmrc.http.{CorePost, HeaderCarrier, HttpReads, HttpResponse}
 import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -35,7 +35,7 @@ class ServiceLocatorConnectorSpec
     val serviceLocatorException = new RuntimeException
 
     val connector: ServiceLocatorConnector = new ServiceLocatorConnector {
-      override val http: HttpPost = mock[HttpPost]
+      override val http: CorePost = mock[CorePost]
       override val appUrl: String = "http://api-microservice-template.service"
       override val appName: String = "api-microservice-template"
       override val serviceUrl: String = "https://SERVICE_LOCATOR"

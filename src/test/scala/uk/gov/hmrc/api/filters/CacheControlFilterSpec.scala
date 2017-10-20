@@ -17,17 +17,17 @@
 package uk.gov.hmrc.api.filters
 
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers._
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mock.MockitoSugar
+import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpecLike}
 import play.api.http.HeaderNames
-import play.api.http.HttpVerbs.{GET,POST}
+import play.api.http.HttpVerbs.{GET, POST}
 import play.api.mvc.{Result, _}
-import play.api.test.FakeRequest
-import play.api.test.{FakeApplication, _}
+import play.api.test.{FakeApplication, FakeRequest}
 import uk.gov.hmrc.play.test.WithFakeApplication
+
 import scala.concurrent.Future
 
 class CacheControlFilterSpec extends WordSpecLike with Matchers with MockitoSugar with ScalaFutures {
