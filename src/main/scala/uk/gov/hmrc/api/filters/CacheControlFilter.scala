@@ -16,17 +16,21 @@
 
 package uk.gov.hmrc.api.filters
 
+import akka.stream.Materializer
 import play.api.Play
+import play.api.Play.current
 import play.api.http.HttpVerbs.{GET => GET_METHOD}
 import play.api.mvc.{Filter, RequestHeader, Result}
 import play.mvc.Http.HeaderNames
+
+import scala.collection.JavaConverters._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.matching.Regex
-import scala.collection.JavaConverters._
-import uk.gov.hmrc.play.microservice.filters.MicroserviceFilterSupport
 
-abstract class CacheControlFilter extends Filter with MicroserviceFilterSupport {
+abstract class CacheControlFilter extends Filter {
+  implicit def mat: Materializer = Play.materializer
+
   val cachedEndPoints: Map[String, Int]
 
   final def apply(f: RequestHeader => Future[Result])(requestHeader: RequestHeader): Future[Result] = {

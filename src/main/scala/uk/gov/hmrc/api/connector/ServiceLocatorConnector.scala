@@ -16,15 +16,18 @@
 
 package uk.gov.hmrc.api.connector
 
-import play.api.Logger
+import com.google.inject.{ImplementedBy, Inject, Singleton}
+import play.api.Mode.Mode
+import play.api.{Configuration, Environment, Logger}
 import uk.gov.hmrc.api.config.ServiceLocatorConfig
 import uk.gov.hmrc.api.domain.Registration
 import uk.gov.hmrc.http.{CorePost, HeaderCarrier}
-import uk.gov.hmrc.play.config.AppName
+import uk.gov.hmrc.play.bootstrap.config.AppName
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
+@ImplementedBy(classOf[ApiServiceLocatorConnector])
 trait ServiceLocatorConnector {
   def appName: String
   val appUrl: String
@@ -48,20 +51,14 @@ trait ServiceLocatorConnector {
   }
 }
 
-
-sealed trait ServiceLocatorConnectorConfig extends ServiceLocatorConnector with ServiceLocatorConfig with AppName {
-  import play.api.Play.current
-
-  lazy val appUrl = current.configuration.getString("appUrl").getOrElse(throw new RuntimeException("appUrl is not configured"))
-  lazy val serviceUrl = serviceLocatorUrl
-
-  val handlerOK: () => Unit = () => Logger.info("Service is registered on the service locator")
-  val handlerError: Throwable => Unit = e => Logger.error(s"Service could not register on the service locator", e)
-  val metadata: Option[Map[String, String]] = Some(Map("third-party-api" -> "true"))
-}
-
-object ServiceLocatorConnector {
-  def apply(httpPost: CorePost): ServiceLocatorConnector = new ServiceLocatorConnectorConfig{
-    override val http: CorePost = httpPost
-  }
+@Singleton
+class ApiServiceLocatorConnector @Inject()(override val runModeConfiguration: Configuration, environment: Environment, override val http: CorePost)
+  extends ServiceLocatorConnector with ServiceLocatorConfig with AppName {
+  override val appUrl: String = runModeConfiguration.getString("appUrl").getOrElse(throw new RuntimeException("appUrl is not configured"))
+  override val serviceUrl: String = serviceLocatorUrl
+  override val handlerOK: () => Unit = () => Logger.info("Service is registered on the service locator")
+  override val handlerError: Throwable => Unit = e => Logger.error("Service could not register on the service locator", e)
+  override val metadata: Option[Map[String, String]] = Some(Map("third-party-api" -> "true"))
+  override def configuration: Configuration = runModeConfiguration
+  override protected def mode: Mode = environment.mode
 }
