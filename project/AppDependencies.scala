@@ -8,7 +8,7 @@ object AppDependencies {
   val compile = Seq(
     ws,
     "com.typesafe.play" %% "play" % PlayVersion.current % "provided",
-    "uk.gov.hmrc" %% "microservice-bootstrap" % "6.9.0" % "provided"
+    "uk.gov.hmrc" %% "microservice-bootstrap" % "6.18.0" % "provided"
   )
 
   trait TestDependencies {
