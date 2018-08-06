@@ -18,6 +18,8 @@ package uk.gov.hmrc.api.connector
 
 import com.google.inject.{ImplementedBy, Inject, Singleton}
 import play.api.Mode.Mode
+import play.api.http.ContentTypes.JSON
+import play.api.http.HeaderNames.CONTENT_TYPE
 import play.api.{Configuration, Environment, Logger}
 import uk.gov.hmrc.api.config.ServiceLocatorConfig
 import uk.gov.hmrc.api.domain.Registration
@@ -39,7 +41,7 @@ trait ServiceLocatorConnector {
 
   def register(implicit hc: HeaderCarrier): Future[Boolean] = {
     val registration = Registration(appName, appUrl, metadata)
-    http.POST(s"$serviceUrl/registration", registration, Seq("Content-Type" -> "application/json")) map {
+    http.POST(s"$serviceUrl/registration", registration, Seq(CONTENT_TYPE -> JSON)) map {
       _ =>
         handlerOK()
         true
