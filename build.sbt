@@ -1,8 +1,11 @@
+import uk.gov.hmrc.SbtArtifactory
+
 name := "play-hmrc-api"
 
 lazy val library = (project in file("."))
-  .enablePlugins(SbtAutoBuildPlugin, SbtGitVersioning)
+  .enablePlugins(SbtAutoBuildPlugin, SbtGitVersioning, SbtArtifactory)
   .settings(
+    majorVersion := 3,
     scalaVersion := "2.11.11",
     crossScalaVersions := Seq("2.11.11"),
     libraryDependencies ++= AppDependencies(),
