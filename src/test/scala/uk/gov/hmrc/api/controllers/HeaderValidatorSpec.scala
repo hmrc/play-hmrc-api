@@ -16,9 +16,15 @@
 
 package uk.gov.hmrc.api.controllers
 
+import akka.actor.ActorSystem
+import akka.stream.ActorMaterializer
+import org.scalatest.BeforeAndAfterAll
+import play.api.mvc.{AnyContent, BodyParser, DefaultPlayBodyParsers, PlayBodyParsers}
 import uk.gov.hmrc.play.test.UnitSpec
 
-class HeaderValidatorSpec extends UnitSpec with HeaderValidator {
+import scala.concurrent.ExecutionContext
+
+class HeaderValidatorSpec extends UnitSpec with HeaderValidator with BeforeAndAfterAll {
 
   "acceptHeaderValidationRules" should {
     "return false when the header value is missing" in {
@@ -55,4 +61,15 @@ class HeaderValidatorSpec extends UnitSpec with HeaderValidator {
       acceptHeaderValidationRules(Some("application/vnd.hmrc.notvalid+json")) shouldBe false
     }
   }
+
+  private implicit val actorSystem: ActorSystem = ActorSystem(getClass.getSimpleName)
+  private implicit val materializer: ActorMaterializer = ActorMaterializer()
+
+  override protected def afterAll(): Unit = {
+    super.afterAll()
+    await(actorSystem.terminate())
+  }
+
+  override protected val parser: BodyParser[AnyContent] = PlayBodyParsers().default
+  override protected val executionContext: ExecutionContext = ExecutionContext.global
 }

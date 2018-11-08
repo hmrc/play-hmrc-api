@@ -22,10 +22,12 @@ import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpecLike}
+import play.api.Application
 import play.api.http.HeaderNames
 import play.api.http.HttpVerbs.{GET, POST}
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{Result, _}
-import play.api.test.{FakeApplication, FakeRequest}
+import play.api.test.FakeRequest
 import uk.gov.hmrc.play.test.WithFakeApplication
 
 import scala.concurrent.Future
@@ -102,7 +104,7 @@ class CacheControlFilterSpec extends WordSpecLike with Matchers with MockitoSuga
 class CacheControlFilterWithAppSpec extends WordSpecLike with Matchers with MockitoSugar with ScalaFutures with WithFakeApplication {
 
   val additionalConfiguration: Map[String, Any] = Map("apiCaching" -> Map("/zark/snork" -> 1234, "/splish/splash" -> 5678))
-  override lazy val fakeApplication = FakeApplication(additionalConfiguration = additionalConfiguration)
+  override lazy val fakeApplication: Application = new GuiceApplicationBuilder().bindings(bindModules:_*).configure(additionalConfiguration).build()
 
   "Creating the filter from config" should {
 

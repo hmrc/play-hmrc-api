@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.api.controllers
 
+import play.api.libs.json.JsonValidationError
+
 
 abstract class ErrorResponse( val httpStatusCode: Int,
                               val errorCode: String,
@@ -32,12 +34,10 @@ case class ErrorGenericBadRequest(msg : String = "Bad Request") extends ErrorRes
 
 object ErrorGenericBadRequest {
 
-  import play.api.data.validation.ValidationError
-  import play.api.libs.json.JsPath
-  import play.api.libs.json.JsError
+  import play.api.libs.json.{JsError, JsPath}
 
-  def apply(errors : Seq[(JsPath, Seq[ValidationError])]) =
-    new ErrorGenericBadRequest(JsError.toFlatJson(errors).as[String])
+  def apply(errors : Seq[(JsPath, Seq[JsonValidationError])]) =
+    new ErrorGenericBadRequest(JsError.toJson(errors).as[String])
 }
 
 case object ErrorAcceptHeaderInvalid extends ErrorResponse(406, "ACCEPT_HEADER_INVALID", "The accept header is missing or invalid")
@@ -50,7 +50,7 @@ case object PreferencesSettingsError extends ErrorResponse(500, "PREFERENCE_SETT
 object ErrorResponse {
   import play.api.libs.json.{JsValue, Json, Writes}
 
-  implicit val writes = new Writes[ErrorResponse] {
+  implicit val writes: Writes[ErrorResponse] = new Writes[ErrorResponse] {
     def writes(e: ErrorResponse): JsValue = Json.obj("code" -> e.errorCode, "message" -> e.message)
   }
 }

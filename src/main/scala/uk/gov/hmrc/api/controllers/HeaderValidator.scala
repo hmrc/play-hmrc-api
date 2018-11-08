@@ -17,9 +17,9 @@
 package uk.gov.hmrc.api.controllers
 
 import play.api.libs.json.Json
-import play.api.mvc.{ActionBuilder, Request, Result, Results}
+import play.api.mvc._
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.matching.Regex
 import scala.util.matching.Regex.Match
 
@@ -35,11 +35,22 @@ trait HeaderValidator extends Results {
   val acceptHeaderValidationRules: Option[String] => Boolean =
     _ flatMap (a => matchHeader(a) map (res => validateContentType(res.group("contenttype")) && validateVersion(res.group("version")))) getOrElse (false)
 
+  // Classes can provide these by having  cc: ControllerComponents injected
+//  override protected val parser: BodyParser[AnyContent] = cc.parsers.defaultBodyParser
+//  override protected val executionContext: ExecutionContext = cc.executionContext
+  protected val parser: BodyParser[AnyContent]
+  protected val executionContext: ExecutionContext
 
-  def validateAccept(rules: Option[String] => Boolean) = new ActionBuilder[Request] {
-    def invokeBlock[A](request: Request[A], block: (Request[A]) => Future[Result]) = {
+
+
+  def validateAccept(rules: Option[String] => Boolean): ActionBuilder[Request, AnyContent] = new ActionBuilder[Request, AnyContent] {
+    override def invokeBlock[A](request: Request[A], block: Request[A] => Future[Result]): Future[Result] = {
       if (rules(request.headers.get("Accept"))) block(request)
       else Future.successful(Status(ErrorAcceptHeaderInvalid.httpStatusCode)(Json.toJson(ErrorAcceptHeaderInvalid)))
     }
+
+    override def parser: BodyParser[AnyContent] = HeaderValidator.this.parser
+
+    override protected def executionContext: ExecutionContext = HeaderValidator.this.executionContext
   }
 }

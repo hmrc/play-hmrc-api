@@ -17,14 +17,13 @@
 package uk.gov.hmrc.api.connector
 
 import com.google.inject.{ImplementedBy, Inject, Singleton}
-import play.api.Mode.Mode
+import javax.inject.Named
 import play.api.http.ContentTypes.JSON
 import play.api.http.HeaderNames.CONTENT_TYPE
-import play.api.{Configuration, Environment, Logger}
-import uk.gov.hmrc.api.config.ServiceLocatorConfig
+import play.api.{Configuration, Logger}
 import uk.gov.hmrc.api.domain.Registration
 import uk.gov.hmrc.http.{CorePost, HeaderCarrier}
-import uk.gov.hmrc.play.bootstrap.config.AppName
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -54,13 +53,17 @@ trait ServiceLocatorConnector {
 }
 
 @Singleton
-class ApiServiceLocatorConnector @Inject()(override val runModeConfiguration: Configuration, environment: Environment, override val http: CorePost)
-  extends ServiceLocatorConnector with ServiceLocatorConfig with AppName {
-  override val appUrl: String = runModeConfiguration.getString("appUrl").getOrElse(throw new RuntimeException("appUrl is not configured"))
+class ApiServiceLocatorConnector @Inject()(
+  override val http: CorePost,
+  @Named("appName") override val appName: String,
+  configuration: Configuration,
+  servicesConfig: ServicesConfig)
+  extends ServiceLocatorConnector {
+  private lazy val serviceLocatorUrl: String = servicesConfig.baseUrl("service-locator")
+
+  override val appUrl: String = configuration.getString("appUrl").getOrElse(throw new RuntimeException("appUrl is not configured"))
   override val serviceUrl: String = serviceLocatorUrl
   override val handlerOK: () => Unit = () => Logger.info("Service is registered on the service locator")
   override val handlerError: Throwable => Unit = e => Logger.error("Service could not register on the service locator", e)
   override val metadata: Option[Map[String, String]] = Some(Map("third-party-api" -> "true"))
-  override def configuration: Configuration = runModeConfiguration
-  override protected def mode: Mode = environment.mode
 }

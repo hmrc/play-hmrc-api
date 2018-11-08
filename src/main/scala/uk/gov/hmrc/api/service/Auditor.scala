@@ -16,28 +16,29 @@
 
 package uk.gov.hmrc.api.service
 
-import uk.gov.hmrc.play.config.AppName
+import javax.inject.{Inject, Named, Singleton}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
+import uk.gov.hmrc.play.audit.model.DataEvent
 
-trait Auditor extends AppName {
+import scala.concurrent.{ExecutionContext, Future}
 
-  import uk.gov.hmrc.http.HeaderCarrier
-  import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-  import uk.gov.hmrc.play.audit.model.DataEvent
-
-  import scala.concurrent.{ExecutionContext, Future}
-
-  val auditConnector : AuditConnector
+@Singleton
+class Auditor @Inject() (
+  @Named("appName") appName: String,
+  auditConnector : AuditConnector
+) {
 
   lazy val auditType : String = "ServiceResponseSent"
 
-  protected def audit(service: String, details: Map[String, String])(implicit hc: HeaderCarrier, ec : ExecutionContext) = {
+  protected def audit(service: String, details: Map[String, String])(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[AuditResult] = {
     auditConnector.sendEvent(
       DataEvent(appName, auditType,
         tags = Map("transactionName" -> service),
         detail = details))
   }
 
-  def withAudit[T](service: String, details: Map[String, String])(func: Future[T])(implicit hc: HeaderCarrier, ec : ExecutionContext) = {
+  def withAudit[T](service: String, details: Map[String, String])(func: Future[T])(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[T] = {
     audit(service, details) // No need to wait!
     func
   }
