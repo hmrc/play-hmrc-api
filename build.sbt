@@ -14,7 +14,8 @@ lazy val library = (project in file("."))
     makePublicallyAvailableOnBintray := true,
     libraryDependencies ++= LibraryDependencies(),
     resolvers := Seq(
-      Resolver.bintrayRepo("hmrc", "releases")
+      Resolver.bintrayRepo("hmrc", "releases"),
+      Resolver.jcenterRepo
     ),
     playCrossCompilationSettings
   )
