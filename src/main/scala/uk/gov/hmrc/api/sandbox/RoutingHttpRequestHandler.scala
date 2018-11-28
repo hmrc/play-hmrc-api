@@ -26,24 +26,25 @@ import uk.gov.hmrc.play.bootstrap.http.RequestHandler
 import scala.util.matching.Regex
 
 @Singleton
-class RoutingHttpRequestHandler @Inject()(router: Router, errorHandler: HttpErrorHandler, configuration: HttpConfiguration,
-                                          filters: HttpFilters, environment: Environment, runConfiguration: Configuration)
+class RoutingHttpRequestHandler @Inject()(
+  router: Router, errorHandler: HttpErrorHandler, configuration: HttpConfiguration,
+  filters: HttpFilters, environment: Environment, runConfiguration: Configuration
+)
   extends RequestHandler(router: Router, errorHandler: HttpErrorHandler, configuration: HttpConfiguration, filters: HttpFilters) {
 
-  lazy val header = runConfiguration.getString(s"router.header")
-  lazy val regex = runConfiguration.getString(s"router.regex")
-  lazy val prefix = runConfiguration.getString(s"router.prefix")
+  lazy val header: Option[String] = runConfiguration.getString(s"router.header")
+  lazy val regex : Option[String] = runConfiguration.getString(s"router.regex")
+  lazy val prefix: Option[String] = runConfiguration.getString(s"router.prefix")
 
   lazy val routing: Option[(String, String, String)] = {
     (header, regex, prefix) match {
       case (Some(a: String), Some(b: String), Some(c: String)) => Some((a, b, c))
-      case _ => None
+      case _                                                   => None
     }
   }
 
-  override def routeRequest(request: RequestHeader): Option[Handler] = {
+  override def routeRequest(request: RequestHeader): Option[Handler] =
     super.routeRequest(overrideRouting(request))
-  }
 
   def overrideRouting(request: RequestHeader): RequestHeader = {
     routing.fold(request) { routing =>
@@ -56,7 +57,7 @@ class RoutingHttpRequestHandler @Inject()(router: Router, errorHandler: HttpErro
               request.copy(path = routing._3 + request.path)
             }
           }
-        case _ => request
+        case _           => request
       }
     }
   }
