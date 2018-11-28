@@ -7,17 +7,13 @@ object LibraryDependencies {
 
   val compile: Seq[ModuleID] =
     PlayCrossCompilation.dependencies(
-      shared = Seq(
-      ),
+      shared = Seq(),
       play25 = Seq(
-        "com.typesafe.play" %% "play" % play25Version,
         "com.typesafe.play" %% "play-ws" % play25Version,
-        "uk.gov.hmrc" %% "bootstrap-play-25" % "3.2.0" % "provided"
+        "uk.gov.hmrc" %% "bootstrap-play-25" % "3.2.0" % Provided
       ),
       play26 = Seq(
-        "com.typesafe.play" %% "play" % play26Version,
         "com.typesafe.play" %% "play-ws" % play26Version,
-        "com.typesafe.play" %% "play-guice" % play26Version,
         "uk.gov.hmrc" %% "bootstrap-play-26" % "0.32.0" % Provided
       )
     )
@@ -25,9 +21,6 @@ object LibraryDependencies {
   val test: Seq[ModuleID] =
     PlayCrossCompilation.dependencies(
       shared = Seq(
-        "com.outworkers" %% "util-samplers" % "0.40.0" % Test,
-        "org.scalacheck" %% "scalacheck"    % "1.13.4" % Test,
-        "org.scalamock"  %% "scalamock"     % "4.1.0"  % Test,
         "org.scalatest"  %% "scalatest"     % "3.0.5"  % Test,
         "uk.gov.hmrc"    %% "hmrctest"      % "3.0.0" % Test,
         "org.mockito"    %  "mockito-core"  % "2.11.0" % Test
@@ -42,6 +35,6 @@ object LibraryDependencies {
       )
     )
 
-  def apply() = compile ++ test
+  def apply(): Seq[ModuleID] = compile ++ test
 }
 
