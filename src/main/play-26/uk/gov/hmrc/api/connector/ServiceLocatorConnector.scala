@@ -53,11 +53,17 @@ trait ServiceLocatorConnector {
 }
 
 @Singleton
-class ApiServiceLocatorConnector @Inject()(runModeConfiguration: Configuration, environment: Environment, override val http: CorePost, @Named("appName") override val appName: String, servicesConfig: ServicesConfig)
+class ApiServiceLocatorConnector @Inject()(
+  runModeConfiguration: Configuration,
+  servicesConfig: ServicesConfig,
+  environment: Environment,
+  override val http: CorePost,
+  @Named("appName") override val appName: String
+)
   extends ServiceLocatorConnector {
-  override val appUrl      : String                      = runModeConfiguration.get[String]("appUrl")
+  override val appUrl      : String                      = servicesConfig.getString("appUrl")
   override val handlerOK   : () => Unit                  = () => Logger.info("Service is registered on the service locator")
   override val handlerError: Throwable => Unit           = e => Logger.error("Service could not register on the service locator", e)
   override val metadata    : Option[Map[String, String]] = Some(Map("third-party-api" -> "true"))
-  override val serviceUrl  : String                      = servicesConfig.baseUrl(appName)
+  override val serviceUrl  : String                      = servicesConfig.baseUrl("service-locator")
 }
