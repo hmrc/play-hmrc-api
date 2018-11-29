@@ -14,12 +14,18 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.api.domain
+package uk.gov.hmrc.api.controllers
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.Json
+import uk.gov.hmrc.play.test.UnitSpec
 
-case class Registration(serviceName: String, serviceUrl: String, metadata: Option[Map[String, String]] = None)
+class ErrorResponseSpec extends UnitSpec {
 
-object Registration {
-  implicit val format: OFormat[Registration] = Json.format
+  "errorResponse" should {
+    "be translated to error Json with only the required fields" in {
+      Json.toJson(ErrorAcceptHeaderInvalid).toString() shouldBe
+        """{"code":"ACCEPT_HEADER_INVALID","message":"The accept header is missing or invalid"}"""
+    }
+  }
+
 }

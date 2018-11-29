@@ -16,7 +16,8 @@
 
 package uk.gov.hmrc.api.connector
 
-import com.google.inject.{ImplementedBy, Inject, Singleton}
+import com.google.inject.{ImplementedBy, Singleton}
+import javax.inject.Inject
 import play.api.Mode.Mode
 import play.api.http.ContentTypes.JSON
 import play.api.http.HeaderNames.CONTENT_TYPE

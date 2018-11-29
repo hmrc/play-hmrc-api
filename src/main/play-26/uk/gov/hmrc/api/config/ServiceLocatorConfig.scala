@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.api.domain
+package uk.gov.hmrc.api.config
 
-import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-case class Registration(serviceName: String, serviceUrl: String, metadata: Option[Map[String, String]] = None)
-
-object Registration {
-  implicit val format: OFormat[Registration] = Json.format
+trait ServiceLocatorConfig extends ServicesConfig {
+  lazy val serviceLocatorUrl: String = baseUrl("service-locator")
 }

@@ -47,9 +47,9 @@ abstract class CacheControlFilter extends Filter {
 object CacheControlFilter {
   val configKey = "apiCaching"
 
-  def fromConfig(configKey: String) = {
+  def fromConfig(configKey: String): CacheControlFilter = {
     new CacheControlFilter {
-      override lazy val cachedEndPoints = {
+      override lazy val cachedEndPoints: Map[String, Int] = {
         Play.current.configuration.getObject(configKey).map(_.asScala).iterator.flatMap(a => a.toMap).map{ a => a._1 -> Int.unbox(a._2.unwrapped()) }.toMap
       }
     }
