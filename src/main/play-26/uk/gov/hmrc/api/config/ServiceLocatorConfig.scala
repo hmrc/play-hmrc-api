@@ -16,8 +16,10 @@
 
 package uk.gov.hmrc.api.config
 
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+import com.google.inject.Inject
+import uk.gov.hmrc.play.bootstrap.config.{ServicesConfig}
 
-trait ServiceLocatorConfig extends ServicesConfig {
-  lazy val serviceLocatorUrl: String = baseUrl("service-locator")
+@deprecated(message="Use ServicesConfig directly instead")
+class ServiceLocatorConfig @Inject()(servicesConfig: ServicesConfig) {
+  lazy val serviceLocatorUrl: String = servicesConfig.baseUrl("service-locator")
 }
