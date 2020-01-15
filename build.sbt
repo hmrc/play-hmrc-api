@@ -8,7 +8,7 @@ val scalaVer: String = "2.12.8"
 lazy val library = (project in file("."))
   .enablePlugins(SbtAutoBuildPlugin, SbtGitVersioning, SbtArtifactory)
   .settings(
-    majorVersion := 3,
+    majorVersion := 4,
     crossSbtVersions := List("0.13.18", "1.3.4"),
     crossScalaVersions := List("2.11.12", scalaVer),
     makePublicallyAvailableOnBintray := true,
