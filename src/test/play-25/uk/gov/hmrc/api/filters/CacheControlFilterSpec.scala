@@ -28,7 +28,7 @@ import play.api.test.{FakeApplication, FakeRequest}
 import uk.gov.hmrc.play.test.WithFakeApplication
 
 import scala.concurrent.Future
-import org.scalatestplus.mockito.MockitoSugar
+import org.scalatest.mockito.MockitoSugar
 
 class CacheControlFilterSpec extends WordSpecLike with Matchers with MockitoSugar with ScalaFutures {
 
