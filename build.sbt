@@ -10,7 +10,7 @@ lazy val library = (project in file("."))
   .settings(
     majorVersion := 3,
     crossSbtVersions := List("0.13.18", "1.3.4"),
-    scalaVersion := scalaVer,
+    crossScalaVersions := List("2.11.12", scalaVer),
     makePublicallyAvailableOnBintray := true,
     libraryDependencies ++= LibraryDependencies(),
     resolvers := Seq(
