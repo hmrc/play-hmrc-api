@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,17 +21,21 @@ import play.api.http.{HttpErrorHandler, LazyHttpErrorHandler}
 import play.api.mvc.{Action, AnyContent}
 
 class DocumentationController(errorHandler: HttpErrorHandler) extends AssetsBuilder(errorHandler) {
-  def documentation(version: String, endpointName: String): Action[AnyContent] = {
+
+  def documentation(
+    version:      String,
+    endpointName: String
+  ): Action[AnyContent] =
     super.at(s"/public/api/documentation/$version", s"${endpointName.replaceAll(" ", "-")}.xml")
-  }
 
-  def definition(): Action[AnyContent] = {
+  def definition(): Action[AnyContent] =
     super.at(s"/public/api", "definition.json")
-  }
 
-  def conf(version: String, file: String): Action[AnyContent] = {
+  def conf(
+    version: String,
+    file:    String
+  ): Action[AnyContent] =
     super.at(s"/public/api/conf/$version", file)
-  }
 }
 
 object DocumentationController extends DocumentationController(LazyHttpErrorHandler)

@@ -18,18 +18,26 @@ package uk.gov.hmrc.api.controllers
 
 import controllers.Assets
 import play.api.http.HttpErrorHandler
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import uk.gov.hmrc.play.bootstrap.controller.BackendController
+import play.api.mvc.{Action, AnyContent}
 
-class DocumentationController(cc: ControllerComponents, assets: Assets, errorHandler: HttpErrorHandler)
-  extends BackendController(cc) {
+class DocumentationController(
+  cc:           ControllerComponents,
+  assets:       Assets,
+  errorHandler: HttpErrorHandler)
+    extends BackendController(cc) {
 
-  def documentation(version: String, endpointName: String): Action[AnyContent] =
+  def documentation(
+    version:      String,
+    endpointName: String
+  ): Action[AnyContent] =
     assets.at(s"/public/api/documentation/$version", s"${endpointName.replaceAll(" ", "-")}.xml")
 
   def definition(): Action[AnyContent] =
     assets.at(s"/public/api", "definition.json")
 
-  def conf(version: String, file: String): Action[AnyContent] =
+  def conf(
+    version: String,
+    file:    String
+  ): Action[AnyContent] =
     assets.at(s"/public/api/conf/$version", file)
 }

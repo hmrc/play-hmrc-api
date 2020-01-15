@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.api.sandbox
 
-
 trait FileResource {
 
   import java.io.InputStream
@@ -24,11 +23,6 @@ trait FileResource {
   import play.api.Logger
 
   import scala.io.Source
-
-  private def readStreamToString(is: InputStream) = {
-    try Source.fromInputStream(is).mkString.toString
-    finally is.close()
-  }
 
   def findResource(path: String): Option[String] = {
     val resource = getClass.getResourceAsStream(path)
@@ -39,4 +33,8 @@ trait FileResource {
       Some(readStreamToString(resource))
     }
   }
+
+  private def readStreamToString(is: InputStream) =
+    try Source.fromInputStream(is).mkString.toString
+    finally is.close()
 }

@@ -16,18 +16,15 @@
 
 package uk.gov.hmrc.api.controllers
 
-import play.api.libs.json.JsonValidationError
-
 abstract class ErrorResponse(
   val httpStatusCode: Int,
-  val errorCode: String,
-  val message: String
-)
-
+  val errorCode:      String,
+  val message:        String)
 
 case object ErrorUnauthorized extends ErrorResponse(401, "UNAUTHORIZED", "Bearer token is missing or not authorized")
 
-case object ErrorUnauthorizedLowCL extends ErrorResponse(401, "LOW_CONFIDENCE_LEVEL", "Confidence Level on account does not allow access")
+case object ErrorUnauthorizedLowCL
+    extends ErrorResponse(401, "LOW_CONFIDENCE_LEVEL", "Confidence Level on account does not allow access")
 
 case object ErrorNotFound extends ErrorResponse(404, "NOT_FOUND", "Resource was not found")
 
@@ -41,12 +38,13 @@ object ErrorGenericBadRequest {
     new ErrorGenericBadRequest(JsError.toJson(errors).as[String])
 }
 
-case object ErrorAcceptHeaderInvalid extends ErrorResponse(406, "ACCEPT_HEADER_INVALID", "The accept header is missing or invalid")
+case object ErrorAcceptHeaderInvalid
+    extends ErrorResponse(406, "ACCEPT_HEADER_INVALID", "The accept header is missing or invalid")
 
 case object ErrorInternalServerError extends ErrorResponse(500, "INTERNAL_SERVER_ERROR", "Internal server error")
 
-case object PreferencesSettingsError extends ErrorResponse(500, "PREFERENCE_SETTINGS_ERROR", "Failed to set preferences")
-
+case object PreferencesSettingsError
+    extends ErrorResponse(500, "PREFERENCE_SETTINGS_ERROR", "Failed to set preferences")
 
 object ErrorResponse {
 
