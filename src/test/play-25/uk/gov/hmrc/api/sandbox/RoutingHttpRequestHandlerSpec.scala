@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,10 @@ import uk.gov.hmrc.play.test.UnitSpec
 
 class RoutingHttpRequestHandlerSpec extends UnitSpec {
 
-  class FakeRequestHeader(fakeHeaders: Headers, methodType: String) extends RequestHeader {
+  class FakeRequestHeader(
+    fakeHeaders: Headers,
+    methodType:  String)
+      extends RequestHeader {
     override def id: Long = Math.random().toLong
 
     override def tags: Map[String, String] = Map.empty
@@ -61,7 +64,12 @@ class RoutingHttpRequestHandlerSpec extends UnitSpec {
 
       val routingHttpRequestHandler = application.injector.instanceOf[RoutingHttpRequestHandler]
 
-      val requestHeader = new FakeRequestHeader(new Headers(Seq((HOST,"localhost:8236"), (ACCEPT, "application/vnd.hmrc.1.0+json"), (CONTENT_TYPE, ContentTypes.JSON))), "POST")
+      val requestHeader = new FakeRequestHeader(
+        new Headers(
+          Seq((HOST, "localhost:8236"), (ACCEPT, "application/vnd.hmrc.1.0+json"), (CONTENT_TYPE, ContentTypes.JSON))
+        ),
+        "POST"
+      )
       val overriddenRequest = routingHttpRequestHandler.overrideRouting(requestHeader)
       overriddenRequest.path shouldBe "/context/some-path"
       application.stop()
@@ -77,7 +85,12 @@ class RoutingHttpRequestHandlerSpec extends UnitSpec {
 
       val routingHttpRequestHandler = application.injector.instanceOf[RoutingHttpRequestHandler]
 
-      val requestHeader = new FakeRequestHeader(new Headers(Seq((HOST,"localhost:8236"), (ACCEPT, "application/vnd.hmrc.1.0+json"), (CONTENT_TYPE, ContentTypes.JSON))), "POST")
+      val requestHeader = new FakeRequestHeader(
+        new Headers(
+          Seq((HOST, "localhost:8236"), (ACCEPT, "application/vnd.hmrc.1.0+json"), (CONTENT_TYPE, ContentTypes.JSON))
+        ),
+        "POST"
+      )
       val overriddenRequest = routingHttpRequestHandler.overrideRouting(requestHeader)
       overriddenRequest.path shouldBe "/context/some-path"
       application.stop()
@@ -92,7 +105,12 @@ class RoutingHttpRequestHandlerSpec extends UnitSpec {
 
       val routingHttpRequestHandler = application.injector.instanceOf[RoutingHttpRequestHandler]
 
-      val requestHeader = new FakeRequestHeader(new Headers(Seq((HOST,"localhost:8236"), (ACCEPT, "application/vnd.hmrc.1.0+json"), (CONTENT_TYPE, ContentTypes.JSON))), "POST")
+      val requestHeader = new FakeRequestHeader(
+        new Headers(
+          Seq((HOST, "localhost:8236"), (ACCEPT, "application/vnd.hmrc.1.0+json"), (CONTENT_TYPE, ContentTypes.JSON))
+        ),
+        "POST"
+      )
       val overriddenRequest = routingHttpRequestHandler.overrideRouting(requestHeader)
       overriddenRequest.path shouldBe "/context/some-path"
       application.stop()
@@ -107,7 +125,13 @@ class RoutingHttpRequestHandlerSpec extends UnitSpec {
 
       val routingHttpRequestHandler = application.injector.instanceOf[RoutingHttpRequestHandler]
 
-      val requestHeader = new FakeRequestHeader(new Headers(Seq(("X-MOBILE-USER-ID", "208606423740"),(HOST,"localhost:8236"), (ACCEPT, "application/vnd.hmrc.1.0+json"), (CONTENT_TYPE, ContentTypes.JSON))), "POST")
+      val requestHeader = new FakeRequestHeader(new Headers(
+                                                  Seq(("X-MOBILE-USER-ID", "208606423740"),
+                                                      (HOST, "localhost:8236"),
+                                                      (ACCEPT, "application/vnd.hmrc.1.0+json"),
+                                                      (CONTENT_TYPE, ContentTypes.JSON))
+                                                ),
+                                                "POST")
       val overriddenRequest = routingHttpRequestHandler.overrideRouting(requestHeader)
       overriddenRequest.path shouldBe "/sandbox/context/some-path"
       application.stop()

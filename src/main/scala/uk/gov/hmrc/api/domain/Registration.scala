@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,10 @@ package uk.gov.hmrc.api.domain
 
 import play.api.libs.json.{Json, OFormat}
 
-case class Registration(serviceName: String, serviceUrl: String, metadata: Option[Map[String, String]] = None)
+case class Registration(
+  serviceName: String,
+  serviceUrl:  String,
+  metadata:    Option[Map[String, String]] = None)
 
 object Registration {
   implicit val format: OFormat[Registration] = Json.format

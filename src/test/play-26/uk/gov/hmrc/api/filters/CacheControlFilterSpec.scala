@@ -16,19 +16,9 @@
 
 package uk.gov.hmrc.api.filters
 
-import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito._
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mockito.MockitoSugar
-import org.scalatest.{Matchers, WordSpecLike}
-import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.http.HeaderNames
 import play.api.http.HttpVerbs.{GET, POST}
 import play.api.mvc.{Result, _}
-import play.api.test.FakeRequest
-import uk.gov.hmrc.api.AppBuilder
-import uk.gov.hmrc.play.test.WithFakeApplication
 
 import scala.concurrent.Future
 
@@ -36,23 +26,20 @@ class CacheControlFilterSpec extends WordSpecLike with Matchers with MockitoSuga
 
   private trait Setup extends Results {
 
-    val resultFromAction: Result = Ok
-
-    val expectedEndPoint = "/foo/bar$" -> 1234
-    val expectedCacheControlHeader = HeaderNames.CACHE_CONTROL -> ("max-age=" + expectedEndPoint._2)
-    val expectedEndPointRegex = "/foo/\\d+/\\w" -> 4567
-    val expectedCacheControlHeaderRegex = HeaderNames.CACHE_CONTROL -> ("max-age=" + expectedEndPointRegex._2)
-    val expectedNoCacheControlHeader = HeaderNames.CACHE_CONTROL -> "no-cache,no-store,max-age=0"
-
-    val cacheControlFilter = new CacheControlFilter {
-      val cachedEndPoints = Map(expectedEndPoint, expectedEndPointRegex)
-    }
-
     lazy val action = {
-      val mockAction = mock[(RequestHeader) => Future[Result]]
+      val mockAction       = mock[(RequestHeader) => Future[Result]]
       val outgoingResponse = Future.successful(resultFromAction)
       when(mockAction.apply(any())).thenReturn(outgoingResponse)
       mockAction
+    }
+    val resultFromAction: Result = Ok
+    val expectedEndPoint                = "/foo/bar$"               -> 1234
+    val expectedCacheControlHeader      = HeaderNames.CACHE_CONTROL -> ("max-age=" + expectedEndPoint._2)
+    val expectedEndPointRegex           = "/foo/\\d+/\\w"           -> 4567
+    val expectedCacheControlHeaderRegex = HeaderNames.CACHE_CONTROL -> ("max-age=" + expectedEndPointRegex._2)
+    val expectedNoCacheControlHeader    = HeaderNames.CACHE_CONTROL -> "no-cache,no-store,max-age=0"
+    val cacheControlFilter = new CacheControlFilter {
+      val cachedEndPoints = Map(expectedEndPoint, expectedEndPointRegex)
     }
 
     def requestPassedToAction = {
@@ -76,45 +63,67 @@ class CacheControlFilterSpec extends WordSpecLike with Matchers with MockitoSuga
   "During result post-processing, the filter" should {
 
     "add a cache-control header with the correct max-age value given a url defined in application config" in new Setup {
-      cacheControlFilter(action)(FakeRequest("GET", "/foo/bar")).futureValue should be(resultFromAction.withHeaders(expectedCacheControlHeader))
+      cacheControlFilter(action)(FakeRequest("GET", "/foo/bar")).futureValue should be(
+        resultFromAction.withHeaders(expectedCacheControlHeader)
+      )
     }
 
     "add a cache-control header with the correct max-age value given a url defined using a regex in application config" in new Setup {
-      cacheControlFilter(action)(FakeRequest("GET", "/foo/1234/abc" )).futureValue should be(resultFromAction.withHeaders(expectedCacheControlHeaderRegex))
+      cacheControlFilter(action)(FakeRequest("GET", "/foo/1234/abc")).futureValue should be(
+        resultFromAction.withHeaders(expectedCacheControlHeaderRegex)
+      )
     }
 
     "ignore query string parameters" in new Setup {
-      cacheControlFilter(action)(FakeRequest("GET", "/foo/bar?foo=bar&baz=1234")).futureValue should be(resultFromAction.withHeaders(expectedCacheControlHeader))
+      cacheControlFilter(action)(FakeRequest("GET", "/foo/bar?foo=bar&baz=1234")).futureValue should be(
+        resultFromAction.withHeaders(expectedCacheControlHeader)
+      )
     }
 
     "add a cache-control header with no-cache for urls not defined in application config" in new Setup {
-      cacheControlFilter(action)(FakeRequest(GET, "/foo/bar/baz")).futureValue should be(resultFromAction.withHeaders(expectedNoCacheControlHeader))
+      cacheControlFilter(action)(FakeRequest(GET, "/foo/bar/baz")).futureValue should be(
+        resultFromAction.withHeaders(expectedNoCacheControlHeader)
+      )
     }
 
     "add a cache-control header with no-cache given an http method other than GET" in new Setup {
-      cacheControlFilter(action)(FakeRequest(POST, expectedEndPoint._1)).futureValue should be(resultFromAction.withHeaders(expectedNoCacheControlHeader))
+      cacheControlFilter(action)(FakeRequest(POST, expectedEndPoint._1)).futureValue should be(
+        resultFromAction.withHeaders(expectedNoCacheControlHeader)
+      )
     }
   }
 
   "Creating the filter from config" should {
-    "throw an exception on missing config" in  {
-      an [RuntimeException] should be thrownBy CacheControlFilter.fromConfig(CacheControlFilter.configKey).cachedEndPoints
+    "throw an exception on missing config" in {
+      an[RuntimeException] should be thrownBy CacheControlFilter
+        .fromConfig(CacheControlFilter.configKey)
+        .cachedEndPoints
     }
   }
 
 }
 
-class CacheControlFilterWithAppSpec extends WordSpecLike with Matchers with MockitoSugar with ScalaFutures with AppBuilder with GuiceOneServerPerSuite {
+class CacheControlFilterWithAppSpec
+    extends WordSpecLike
+    with Matchers
+    with MockitoSugar
+    with ScalaFutures
+    with AppBuilder
+    with GuiceOneServerPerSuite {
 
-  val additionalConfiguration: Map[String, Any] = Map("apiCaching" -> Map("/zark/snork" -> 1234, "/splish/splash" -> 5678))
   override lazy val app = appBuilder.configure(additionalConfiguration).build()
+  val additionalConfiguration: Map[String, Any] = Map(
+    "apiCaching" -> Map("/zark/snork" -> 1234, "/splish/splash" -> 5678)
+  )
 
   // FakeApplication(additionalConfiguration = additionalConfiguration)
 
   "Creating the filter from config" should {
 
-    "load the correct values" in  {
-        CacheControlFilter.fromConfig(CacheControlFilter.configKey).cachedEndPoints should be(Map("/zark/snork" -> 1234, "/splish/splash" -> 5678))
-      }
+    "load the correct values" in {
+      CacheControlFilter.fromConfig(CacheControlFilter.configKey).cachedEndPoints should be(
+        Map("/zark/snork" -> 1234, "/splish/splash" -> 5678)
+      )
     }
+  }
 }

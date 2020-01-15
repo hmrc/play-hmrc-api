@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,25 +33,38 @@ abstract class CacheControlFilter extends Filter {
 
   val cachedEndPoints: Map[String, Int]
 
-  final def apply(f: RequestHeader => Future[Result])(requestHeader: RequestHeader): Future[Result] = {
-    f(requestHeader).map(result => {
-      val maybeMaxAge = cachedEndPoints.find{ p => new Regex(p._1).findAllIn(requestHeader.path).nonEmpty }.map{ p => p._2 }
+  final def apply(f: RequestHeader => Future[Result])(requestHeader: RequestHeader): Future[Result] =
+    f(requestHeader).map { result =>
+      val maybeMaxAge = cachedEndPoints
+        .find { p =>
+          new Regex(p._1).findAllIn(requestHeader.path).nonEmpty
+        }
+        .map { p =>
+          p._2
+        }
       (requestHeader.method, maybeMaxAge) match {
         case (GET_METHOD, Some(maxAge)) => result.withHeaders(HeaderNames.CACHE_CONTROL -> ("max-age=" + maxAge))
-        case _ => result.withHeaders(HeaderNames.CACHE_CONTROL -> "no-cache,no-store,max-age=0")
+        case _                          => result.withHeaders(HeaderNames.CACHE_CONTROL -> "no-cache,no-store,max-age=0")
       }
-    })
-  }
+    }
 }
 
 object CacheControlFilter {
   val configKey = "apiCaching"
 
-  def fromConfig(configKey: String): CacheControlFilter = {
+  def fromConfig(configKey: String): CacheControlFilter =
     new CacheControlFilter {
+
       override lazy val cachedEndPoints: Map[String, Int] = {
-        Play.current.configuration.getObject(configKey).map(_.asScala).iterator.flatMap(a => a.toMap).map{ a => a._1 -> Int.unbox(a._2.unwrapped()) }.toMap
+        Play.current.configuration
+          .getObject(configKey)
+          .map(_.asScala)
+          .iterator
+          .flatMap(a => a.toMap)
+          .map { a =>
+            a._1 -> Int.unbox(a._2.unwrapped())
+          }
+          .toMap
       }
     }
-  }
 }

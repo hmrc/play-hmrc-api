@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,19 +26,25 @@ trait Auditor extends AppName {
 
   import scala.concurrent.{ExecutionContext, Future}
 
-  val auditConnector : AuditConnector
+  lazy val auditType: String = "ServiceResponseSent"
+  val auditConnector: AuditConnector
 
-  lazy val auditType : String = "ServiceResponseSent"
-
-  protected def audit(service: String, details: Map[String, String])(implicit hc: HeaderCarrier, ec : ExecutionContext) = {
-    auditConnector.sendEvent(
-      DataEvent(appName, auditType,
-        tags = Map("transactionName" -> service),
-        detail = details))
-  }
-
-  def withAudit[T](service: String, details: Map[String, String])(func: Future[T])(implicit hc: HeaderCarrier, ec : ExecutionContext) = {
+  def withAudit[T](
+    service:     String,
+    details:     Map[String, String]
+  )(func:        Future[T]
+  )(implicit hc: HeaderCarrier,
+    ec:          ExecutionContext
+  ) = {
     audit(service, details) // No need to wait!
     func
   }
+
+  protected def audit(
+    service:     String,
+    details:     Map[String, String]
+  )(implicit hc: HeaderCarrier,
+    ec:          ExecutionContext
+  ) =
+    auditConnector.sendEvent(DataEvent(appName, auditType, tags = Map("transactionName" -> service), detail = details))
 }

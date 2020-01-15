@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,36 +16,36 @@
 
 package uk.gov.hmrc.api.controllers
 
-
-abstract class ErrorResponse( val httpStatusCode: Int,
-                              val errorCode: String,
-                              val message: String)
-
+abstract class ErrorResponse(
+  val httpStatusCode: Int,
+  val errorCode:      String,
+  val message:        String)
 
 case object ErrorUnauthorized extends ErrorResponse(401, "UNAUTHORIZED", "Bearer token is missing or not authorized")
 
-case object ErrorUnauthorizedLowCL extends ErrorResponse(401, "LOW_CONFIDENCE_LEVEL", "Confidence Level on account does not allow access")
+case object ErrorUnauthorizedLowCL
+    extends ErrorResponse(401, "LOW_CONFIDENCE_LEVEL", "Confidence Level on account does not allow access")
 
 case object ErrorNotFound extends ErrorResponse(404, "NOT_FOUND", "Resource was not found")
 
-case class ErrorGenericBadRequest(msg : String = "Bad Request") extends ErrorResponse(400, "BAD_REQUEST", msg)
+case class ErrorGenericBadRequest(msg: String = "Bad Request") extends ErrorResponse(400, "BAD_REQUEST", msg)
 
 object ErrorGenericBadRequest {
 
   import play.api.data.validation.ValidationError
-  import play.api.libs.json.JsPath
-  import play.api.libs.json.JsError
+  import play.api.libs.json.{JsError, JsPath}
 
-  def apply(errors : Seq[(JsPath, Seq[ValidationError])]) =
+  def apply(errors: Seq[(JsPath, Seq[ValidationError])]) =
     new ErrorGenericBadRequest(JsError.toFlatJson(errors).as[String])
 }
 
-case object ErrorAcceptHeaderInvalid extends ErrorResponse(406, "ACCEPT_HEADER_INVALID", "The accept header is missing or invalid")
+case object ErrorAcceptHeaderInvalid
+    extends ErrorResponse(406, "ACCEPT_HEADER_INVALID", "The accept header is missing or invalid")
 
 case object ErrorInternalServerError extends ErrorResponse(500, "INTERNAL_SERVER_ERROR", "Internal server error")
 
-case object PreferencesSettingsError extends ErrorResponse(500, "PREFERENCE_SETTINGS_ERROR", "Failed to set preferences")
-
+case object PreferencesSettingsError
+    extends ErrorResponse(500, "PREFERENCE_SETTINGS_ERROR", "Failed to set preferences")
 
 object ErrorResponse {
   import play.api.libs.json.{JsValue, Json, Writes}
