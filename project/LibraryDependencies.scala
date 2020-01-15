@@ -27,7 +27,7 @@ object LibraryDependencies {
       play25 = Seq(
         "com.typesafe.play"      %% "play-test"          % play25Version   % Test,
         "uk.gov.hmrc"            %% "hmrctest"           % "3.9.0-play-25" % Test,
-        "org.scalatestplus.play" %% "scalatestplus-play" % "2.0.1"         % Test
+        "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2"         % Test
       ),
       play26 = Seq(
         "com.typesafe.play"      %% "play-test"          % play26Version   % Test,

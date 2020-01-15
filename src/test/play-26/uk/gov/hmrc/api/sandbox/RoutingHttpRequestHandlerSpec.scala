@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,10 @@ package uk.gov.hmrc.api.sandbox
 
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.typedmap.TypedMap
+import play.api.mvc.request.{RemoteConnection, RequestTarget}
 import play.api.mvc.{Headers, RequestHeader}
+import uk.gov.hmrc.play.test.UnitSpec
 
 class RoutingHttpRequestHandlerSpec extends UnitSpec with HeaderNames {
 
