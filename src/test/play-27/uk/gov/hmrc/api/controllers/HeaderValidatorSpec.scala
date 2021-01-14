@@ -16,7 +16,10 @@
 
 package uk.gov.hmrc.api.controllers
 
+import play.api.mvc.{AnyContent, BodyParser}
 import uk.gov.hmrc.play.test.UnitSpec
+
+import scala.concurrent.ExecutionContext
 
 class HeaderValidatorSpec extends UnitSpec with HeaderValidator {
 
@@ -55,4 +58,6 @@ class HeaderValidatorSpec extends UnitSpec with HeaderValidator {
       acceptHeaderValidationRules(Some("application/vnd.hmrc.notvalid+json")) shouldBe false
     }
   }
+  override def parser:                     BodyParser[AnyContent] = ???
+  override protected def executionContext: ExecutionContext       = scala.concurrent.ExecutionContext.Implicits.global
 }

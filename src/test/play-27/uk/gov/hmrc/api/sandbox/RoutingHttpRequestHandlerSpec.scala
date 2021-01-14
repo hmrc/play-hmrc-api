@@ -16,41 +16,25 @@
 
 package uk.gov.hmrc.api.sandbox
 
-import java.security.cert.X509Certificate
-
-import io.netty.handler.codec.http.HttpHeaders.Names._
-import play.api.http.ContentTypes
+import play.api.http.{ContentTypes, HeaderNames}
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.typedmap.TypedMap
+import play.api.mvc.request.{RemoteConnection, RequestTarget}
 import play.api.mvc.{Headers, RequestHeader}
 import uk.gov.hmrc.play.test.UnitSpec
 
-class RoutingHttpRequestHandlerSpec extends UnitSpec {
+class RoutingHttpRequestHandlerSpec extends UnitSpec with HeaderNames {
 
   class FakeRequestHeader(
     fakeHeaders: Headers,
     methodType:  String)
       extends RequestHeader {
-    override def id: Long = Math.random().toLong
-
-    override def tags: Map[String, String] = Map.empty
-
-    override def uri: String = "/context/some-path"
-
-    override def path: String = "/context/some-path"
-
-    override def method: String = methodType
-
-    override def version: String = "HTTP/1.1"
-
-    override def queryString: Map[String, Seq[String]] = Map.empty
-
-    override def headers: Headers = fakeHeaders
-
-    override def remoteAddress: String = null
-
-    override def secure: Boolean = true
-
-    override def clientCertificateChain: Option[Seq[X509Certificate]] = None
+    override val target:     RequestTarget    = RequestTarget("/context/some-path", "/context/some-path", Map.empty)
+    override def method:     String           = methodType
+    override def version:    String           = "HTTP/1.1"
+    override def headers:    Headers          = fakeHeaders
+    override def connection: RemoteConnection = RemoteConnection("", secure = true, None)
+    override def attrs:      TypedMap         = TypedMap()
   }
 
   "RouterHttpRequestHandler" should {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,27 +14,17 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.api.sandbox
+package uk.gov.hmrc.api.controllers
 
-trait FileResource {
+import play.api.libs.json.Json
+import uk.gov.hmrc.play.test.UnitSpec
 
-  import java.io.InputStream
+class ErrorResponseSpec extends UnitSpec {
 
-  import play.api.Logger
-
-  import scala.io.Source
-
-  def findResource(path: String): Option[String] = {
-    val resource = getClass.getResourceAsStream(path)
-    if (resource == null) {
-      Logger.warn(s"Could not find resource '$path'")
-      None
-    } else {
-      Some(readStreamToString(resource))
+  "errorResponse" should {
+    "be translated to error Json with only the required fields" in {
+      Json.toJson(ErrorAcceptHeaderInvalid).toString() shouldBe
+      """{"code":"ACCEPT_HEADER_INVALID","message":"The accept header is missing or invalid"}"""
     }
   }
-
-  private def readStreamToString(is: InputStream) =
-    try Source.fromInputStream(is).mkString.toString
-    finally is.close()
 }

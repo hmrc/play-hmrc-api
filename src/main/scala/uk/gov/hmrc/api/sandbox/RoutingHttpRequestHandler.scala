@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,9 +38,9 @@ class RoutingHttpRequestHandler @Inject() (
                            configuration: HttpConfiguration,
                            filters:       HttpFilters) {
 
-  lazy val header: Option[String] = runConfiguration.getString(s"router.header")
-  lazy val regex:  Option[String] = runConfiguration.getString(s"router.regex")
-  lazy val prefix: Option[String] = runConfiguration.getString(s"router.prefix")
+  lazy val header: Option[String] = runConfiguration.getOptional[String](s"router.header")
+  lazy val regex:  Option[String] = runConfiguration.getOptional[String](s"router.regex")
+  lazy val prefix: Option[String] = runConfiguration.getOptional[String](s"router.prefix")
 
   lazy val routing: Option[(String, String, String)] = {
     (header, regex, prefix) match {
@@ -59,7 +59,7 @@ class RoutingHttpRequestHandler @Inject() (
           val found = new Regex(routing._2).findFirstIn(value)
           found.fold(request) { _ =>
             Logger.info(s"Overriding request due to $routing")
-            request.copy(path = routing._3 + request.path)
+            request.withTarget(request.target.withPath(routing._3 + request.path))
           }
         case _ => request
       }

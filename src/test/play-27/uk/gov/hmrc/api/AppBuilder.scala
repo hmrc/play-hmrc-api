@@ -14,18 +14,10 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.api.controllers
+package uk.gov.hmrc.api
 
-import play.api.libs.json.Json
-import uk.gov.hmrc.play.test.UnitSpec
+import play.api.inject.guice.GuiceApplicationBuilder
 
-class ErrorResponseSpec extends UnitSpec {
-
-  "errorResponse" should {
-    "be translated to error Json with only the required fields" in {
-      Json.toJson(ErrorAcceptHeaderInvalid).toString() shouldBe
-      """{"code":"ACCEPT_HEADER_INVALID","message":"The accept header is missing or invalid"}"""
-    }
-  }
-
+trait AppBuilder {
+  protected def appBuilder: GuiceApplicationBuilder = new GuiceApplicationBuilder()
 }

@@ -14,20 +14,25 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.api.service
+package uk.gov.hmrc.service
 
-import uk.gov.hmrc.play.config.AppName
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
+import uk.gov.hmrc.play.audit.model.DataEvent
 
-trait Auditor extends AppName {
+import scala.concurrent.{ExecutionContext, Future}
 
-  import uk.gov.hmrc.http.HeaderCarrier
-  import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-  import uk.gov.hmrc.play.audit.model.DataEvent
-
-  import scala.concurrent.{ExecutionContext, Future}
+trait Auditor {
 
   lazy val auditType: String = "ServiceResponseSent"
   val auditConnector: AuditConnector
+
+  /**
+    * You can get the appName by injecting it into your constructor using:
+    *
+    * `@Named("appName") override val appName: String`
+    */
+  def appName: String
 
   def withAudit[T](
     service:     String,
@@ -35,7 +40,7 @@ trait Auditor extends AppName {
   )(func:        Future[T]
   )(implicit hc: HeaderCarrier,
     ec:          ExecutionContext
-  ) = {
+  ): Future[T] = {
     audit(service, details) // No need to wait!
     func
   }
@@ -45,6 +50,6 @@ trait Auditor extends AppName {
     details:     Map[String, String]
   )(implicit hc: HeaderCarrier,
     ec:          ExecutionContext
-  ) =
+  ): Future[AuditResult] =
     auditConnector.sendEvent(DataEvent(appName, auditType, tags = Map("transactionName" -> service), detail = details))
 }

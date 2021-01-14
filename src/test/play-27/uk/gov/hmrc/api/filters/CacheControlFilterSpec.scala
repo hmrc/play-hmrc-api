@@ -20,15 +20,17 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpecLike}
+import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.http.HeaderNames
 import play.api.http.HttpVerbs.{GET, POST}
 import play.api.mvc.{Result, _}
-import play.api.test.{FakeApplication, FakeRequest}
+import play.api.test.FakeRequest
+import uk.gov.hmrc.api.AppBuilder
 import uk.gov.hmrc.play.test.WithFakeApplication
 
 import scala.concurrent.Future
-import org.scalatest.mockito.MockitoSugar
 
 class CacheControlFilterSpec extends WordSpecLike with Matchers with MockitoSugar with ScalaFutures {
 
@@ -61,8 +63,11 @@ class CacheControlFilterSpec extends WordSpecLike with Matchers with MockitoSuga
   "During request pre-processing, the filter" should {
 
     "do nothing, just pass on the request" in new Setup {
-      cacheControlFilter(action)(FakeRequest())
-      requestPassedToAction should ===(FakeRequest())
+      val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
+
+      cacheControlFilter(action)(request)
+
+      requestPassedToAction should ===(request)
     }
   }
 
@@ -114,13 +119,16 @@ class CacheControlFilterWithAppSpec
     with Matchers
     with MockitoSugar
     with ScalaFutures
-    with WithFakeApplication {
+    with AppBuilder
+    with GuiceOneServerPerSuite {
 
-  override lazy val fakeApplication = FakeApplication(additionalConfiguration = additionalConfiguration)
+  override lazy val app = appBuilder.configure(additionalConfiguration).build()
 
   val additionalConfiguration: Map[String, Any] = Map(
     "apiCaching" -> Map("/zark/snork" -> 1234, "/splish/splash" -> 5678)
   )
+
+  // FakeApplication(additionalConfiguration = additionalConfiguration)
 
   "Creating the filter from config" should {
 
