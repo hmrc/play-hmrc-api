@@ -16,14 +16,14 @@
 
 package uk.gov.hmrc.api.sandbox
 
+import org.scalatest.{Matchers, WordSpec}
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.typedmap.TypedMap
 import play.api.mvc.request.{RemoteConnection, RequestTarget}
 import play.api.mvc.{Headers, RequestHeader}
-import uk.gov.hmrc.play.test.UnitSpec
 
-class RoutingHttpRequestHandlerSpec extends UnitSpec with HeaderNames {
+class RoutingHttpRequestHandlerSpec extends WordSpec with Matchers with HeaderNames {
 
   class FakeRequestHeader(
     fakeHeaders: Headers,

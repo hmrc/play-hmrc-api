@@ -16,10 +16,10 @@
 
 package uk.gov.hmrc.api.controllers
 
+import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json.Json
-import uk.gov.hmrc.play.test.UnitSpec
 
-class ErrorResponseSpec extends UnitSpec {
+class ErrorResponseSpec extends WordSpec with Matchers {
 
   "errorResponse" should {
     "be translated to error Json with only the required fields" in {

@@ -27,7 +27,6 @@ import play.api.http.HeaderNames
 import play.api.http.HttpVerbs.{GET, POST}
 import play.api.mvc.{Result, _}
 import play.api.test.FakeRequest
-import uk.gov.hmrc.api.AppBuilder
 import uk.gov.hmrc.play.test.WithFakeApplication
 
 import scala.concurrent.Future
