@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,16 +26,18 @@ import scala.util.matching.Regex.Match
 trait HeaderValidator extends Results {
   outer =>
 
-  val validateVersion: String => Boolean = _ == "1.0"
+  val validateVersion:     String => Boolean = _ == "1.0"
   val validateContentType: String => Boolean = _ == "json"
+
   val matchHeader: String => Option[Match] =
     new Regex("""^application/vnd[.]{1}hmrc[.]{1}(.*?)[+]{1}(.*)$""", "version", "contenttype").findFirstMatchIn(_)
+
   val acceptHeaderValidationRules: Option[String] => Boolean =
     _.flatMap(a =>
       matchHeader(a).map(res => validateContentType(res.group("contenttype")) && validateVersion(res.group("version")))
     ).getOrElse(false)
 
-  def parser:                     BodyParser[AnyContent]
+  def parser: BodyParser[AnyContent]
 
   def validateAccept(rules: Option[String] => Boolean) = new ActionBuilder[Request, AnyContent] {
 
