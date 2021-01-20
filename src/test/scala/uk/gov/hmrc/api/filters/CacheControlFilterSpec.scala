@@ -20,8 +20,8 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpecLike}
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.HeaderNames
 import play.api.http.HttpVerbs.{GET, POST}
 import play.api.mvc.{Result, _}
