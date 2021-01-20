@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,12 @@
 
 package uk.gov.hmrc.api.controllers
 
+import org.scalatest.{Matchers, WordSpec}
 import play.api.mvc.{AnyContent, BodyParser}
-import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.ExecutionContext
 
-class HeaderValidatorSpec extends UnitSpec with HeaderValidator {
+class HeaderValidatorSpec extends WordSpec with Matchers with HeaderValidator {
 
   "acceptHeaderValidationRules" should {
     "return false when the header value is missing" in {

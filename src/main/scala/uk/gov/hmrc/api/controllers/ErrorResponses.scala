@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 
 package uk.gov.hmrc.api.controllers
+
+import play.api.libs.json._
 
 abstract class ErrorResponse(
   val httpStatusCode: Int,
@@ -32,11 +34,8 @@ case class ErrorGenericBadRequest(msg: String = "Bad Request") extends ErrorResp
 
 object ErrorGenericBadRequest {
 
-  import play.api.data.validation.ValidationError
-  import play.api.libs.json.{JsError, JsPath}
-
-  def apply(errors: Seq[(JsPath, Seq[ValidationError])]) =
-    new ErrorGenericBadRequest(JsError.toFlatJson(errors).as[String])
+  def apply(errors: Seq[(JsPath, Seq[JsonValidationError])]) =
+    new ErrorGenericBadRequest(JsError.toJson(errors).as[String])
 }
 
 case object ErrorAcceptHeaderInvalid
@@ -48,7 +47,6 @@ case object PreferencesSettingsError
     extends ErrorResponse(500, "PREFERENCE_SETTINGS_ERROR", "Failed to set preferences")
 
 object ErrorResponse {
-  import play.api.libs.json.{JsValue, Json, Writes}
 
   implicit val writes = new Writes[ErrorResponse] {
     def writes(e: ErrorResponse): JsValue = Json.obj("code" -> e.errorCode, "message" -> e.message)
