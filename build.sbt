@@ -7,6 +7,7 @@ lazy val library = (project in file("."))
   .enablePlugins(SbtAutoBuildPlugin, SbtGitVersioning, SbtArtifactory)
   .settings(
     scalaVersion := scalaVer,
+    crossScalaVersions := List("2.11.12", scalaVer),
     majorVersion := 5,
     crossSbtVersions := List("1.3.4"),
     makePublicallyAvailableOnBintray := true,
@@ -15,5 +16,6 @@ lazy val library = (project in file("."))
       Resolver.bintrayRepo("hmrc", "releases"),
       Resolver.jcenterRepo
     ),
-    resolvers += "hmrc-releases" at "https://artefacts.tax.service.gov.uk/artifactory/hmrc-releases/"
+    resolvers += "hmrc-releases" at "https://artefacts.tax.service.gov.uk/artifactory/hmrc-releases/",
+    PlayCrossCompilation.playCrossCompilationSettings
   )

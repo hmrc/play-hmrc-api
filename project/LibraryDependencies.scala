@@ -10,7 +10,7 @@ object LibraryDependencies {
       shared = Seq(),
       play26 = Seq(
         "com.typesafe.play" %% "play-ws"           % play26Version,
-        "uk.gov.hmrc"       %% "bootstrap-play-26" % "0.40.0" % Provided
+        "uk.gov.hmrc"       %% "bootstrap-backend-play-26" % "3.2.0" % Provided
       ),
       play27 = Seq(
         "com.typesafe.play" %% "play-ws"                   % play27Version,
