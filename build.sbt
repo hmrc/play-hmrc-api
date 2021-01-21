@@ -5,6 +5,7 @@ name := "play-hmrc-api"
 val scalaVer: String = "2.12.8"
 lazy val library = (project in file("."))
   .enablePlugins(SbtAutoBuildPlugin, SbtGitVersioning, SbtArtifactory)
+  .disablePlugins(JUnitXmlReportPlugin)
   .settings(
     scalaVersion := scalaVer,
     crossScalaVersions := List(scalaVer),
