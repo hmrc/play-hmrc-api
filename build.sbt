@@ -7,7 +7,7 @@ lazy val library = (project in file("."))
   .enablePlugins(SbtAutoBuildPlugin, SbtGitVersioning, SbtArtifactory)
   .settings(
     scalaVersion := scalaVer,
-    crossScalaVersions := List("2.11.12", scalaVer),
+    crossScalaVersions := List(scalaVer),
     majorVersion := 5,
     crossSbtVersions := List("1.3.4"),
     makePublicallyAvailableOnBintray := true,
