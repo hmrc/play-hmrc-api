@@ -16,18 +16,19 @@
 
 package uk.gov.hmrc.api.sandbox
 
+import play.api.Logger
+
 trait FileResource {
 
   import java.io.InputStream
-
-  import play.api.Logger
-
   import scala.io.Source
+
+  protected val logger: Logger = Logger(this.getClass)
 
   def findResource(path: String): Option[String] = {
     val resource = getClass.getResourceAsStream(path)
     if (resource == null) {
-      Logger.warn(s"Could not find resource '$path'")
+      logger.warn(s"Could not find resource '$path'")
       None
     } else {
       Some(readStreamToString(resource))

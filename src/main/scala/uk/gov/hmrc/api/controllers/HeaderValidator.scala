@@ -46,7 +46,7 @@ trait HeaderValidator extends Results {
       block:   (Request[A]) => Future[Result]
     ) =
       if (rules(request.headers.get("Accept"))) block(request)
-      else Future.successful(Status(ErrorAcceptHeaderInvalid.httpStatusCode)(Json.toJson(ErrorAcceptHeaderInvalid)))
+      else Future.successful(Status(ErrorAcceptHeaderInvalid.httpStatusCode)(Json.toJson[ErrorResponse](ErrorAcceptHeaderInvalid)))
 
     override def parser: BodyParser[AnyContent] = outer.parser
 

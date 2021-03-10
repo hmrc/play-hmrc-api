@@ -23,7 +23,7 @@ class ErrorResponseSpec extends WordSpec with Matchers {
 
   "errorResponse" should {
     "be translated to error Json with only the required fields" in {
-      Json.toJson(ErrorAcceptHeaderInvalid).toString() shouldBe
+      Json.toJson[ErrorResponse](ErrorAcceptHeaderInvalid).toString() shouldBe
       """{"code":"ACCEPT_HEADER_INVALID","message":"The accept header is missing or invalid"}"""
     }
   }
