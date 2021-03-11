@@ -38,6 +38,8 @@ class RoutingHttpRequestHandler @Inject() (
                            configuration: HttpConfiguration,
                            filters:       HttpFilters) {
 
+  protected val logger = Logger(this.getClass)
+
   lazy val header: Option[String] = runConfiguration.getOptional[String](s"router.header")
   lazy val regex:  Option[String] = runConfiguration.getOptional[String](s"router.regex")
   lazy val prefix: Option[String] = runConfiguration.getOptional[String](s"router.prefix")
@@ -58,7 +60,7 @@ class RoutingHttpRequestHandler @Inject() (
         case Some(value) =>
           val found = new Regex(routing._2).findFirstIn(value)
           found.fold(request) { _ =>
-            Logger.info(s"Overriding request due to $routing")
+            logger.info(s"Overriding request due to $routing")
             request.withTarget(request.target.withPath(routing._3 + request.path))
           }
         case _ => request

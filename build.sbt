@@ -1,22 +1,15 @@
-import PlayCrossCompilation._
 import uk.gov.hmrc.SbtArtifactory
 
 name := "play-hmrc-api"
-val scalaVer: String = "2.12.8"
+
 lazy val library = (project in file("."))
   .enablePlugins(SbtAutoBuildPlugin, SbtGitVersioning, SbtArtifactory)
   .disablePlugins(JUnitXmlReportPlugin)
   .settings(
-    scalaVersion := scalaVer,
-    crossScalaVersions := List(scalaVer),
-    majorVersion := 5,
-    crossSbtVersions := List("1.3.4"),
+    scalaVersion := "2.12.13",
+    majorVersion := 6,
     makePublicallyAvailableOnBintray := true,
     libraryDependencies ++= LibraryDependencies(),
-    resolvers := Seq(
-      Resolver.bintrayRepo("hmrc", "releases"),
-      Resolver.jcenterRepo
-    ),
-    resolvers += "hmrc-releases" at "https://artefacts.tax.service.gov.uk/artifactory/hmrc-releases/",
+    resolvers += Resolver.jcenterRepo,
     PlayCrossCompilation.playCrossCompilationSettings
   )
