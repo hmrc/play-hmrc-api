@@ -5,7 +5,7 @@ lazy val library = (project in file("."))
   .disablePlugins(JUnitXmlReportPlugin)
   .settings(
     scalaVersion := "2.12.14",
-    majorVersion := 6,
+    majorVersion := 7,
     isPublicArtefact := true,
     libraryDependencies ++= LibraryDependencies(),
     resolvers += Resolver.jcenterRepo,
