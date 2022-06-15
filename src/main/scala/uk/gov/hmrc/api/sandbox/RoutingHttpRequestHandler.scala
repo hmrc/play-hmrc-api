@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,20 +20,24 @@ import javax.inject.{Inject, Singleton}
 import play.api.http.{HttpConfiguration, HttpErrorHandler, HttpFilters}
 import play.api.mvc.{Handler, RequestHeader}
 import play.api.routing.Router
-import play.api.{Configuration, Environment, Logger}
+import play.api.{Configuration, Logger, OptionalDevContext}
+import play.core.WebCommands
 import uk.gov.hmrc.play.bootstrap.http.RequestHandler
 
 import scala.util.matching.Regex
 
 @Singleton
 class RoutingHttpRequestHandler @Inject() (
+  webCommands:      WebCommands,
+  optDevContext:    OptionalDevContext,
   router:           Router,
   errorHandler:     HttpErrorHandler,
   configuration:    HttpConfiguration,
   filters:          HttpFilters,
-  environment:      Environment,
   runConfiguration: Configuration)
-    extends RequestHandler(router:        Router,
+    extends RequestHandler(webCommands:   WebCommands,
+                           optDevContext: OptionalDevContext,
+                           router:        Router,
                            errorHandler:  HttpErrorHandler,
                            configuration: HttpConfiguration,
                            filters:       HttpFilters) {
