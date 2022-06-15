@@ -8,14 +8,8 @@ object LibraryDependencies {
       shared = Seq(
         "com.typesafe.play"      %% "play-ws"                   % PlayVersion.current
       ),
-      play26 = Seq(
-        "uk.gov.hmrc"            %% "bootstrap-backend-play-26" % "4.1.0"
-      ),
-      play27 = Seq(
-        "uk.gov.hmrc"            %% "bootstrap-backend-play-27" % "4.1.0"
-      ),
       play28 = Seq(
-        "uk.gov.hmrc"            %% "bootstrap-backend-play-28" % "4.1.0"
+        "uk.gov.hmrc"            %% "bootstrap-backend-play-28" % "5.24.0"
       )
     )
 
@@ -24,15 +18,6 @@ object LibraryDependencies {
       shared = Seq(
         "com.typesafe.play"      %% "play-test"                 % PlayVersion.current % Test,
         "org.mockito"            % "mockito-core"               % "3.8.0"             % Test
-      ),
-      play26 = Seq(
-        "uk.gov.hmrc"            %% "hmrctest"                  % "3.10.0-play-26"    % Test,
-        "org.scalatestplus.play" %% "scalatestplus-play"        % "3.1.3"             % Test
-      ),
-      play27 = Seq(
-        "uk.gov.hmrc"            %% "service-integration-test"  % "1.1.0-play-27"     % Test,
-        "org.scalatestplus.play" %% "scalatestplus-play"        % "4.0.3"             % Test,
-        "org.pegdown"            %  "pegdown"                   % "1.6.0"             % Test
       ),
       play28 = Seq(
         "uk.gov.hmrc"            %% "service-integration-test"  % "1.1.0-play-28"     % Test,
