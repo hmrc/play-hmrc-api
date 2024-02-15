@@ -1,30 +1,41 @@
 import sbt._
-import play.core.PlayVersion
 
 object LibraryDependencies {
 
-  val compile: Seq[ModuleID] =
-    PlayCrossCompilation.dependencies(
-      shared = Seq(
-        "com.typesafe.play"      %% "play-ws"                   % PlayVersion.current
-      ),
-      play28 = Seq(
-        "uk.gov.hmrc"            %% "bootstrap-backend-play-28" % "5.24.0"
-      )
-    )
+  val play28: Seq[ModuleID] = Seq(
+    "com.typesafe.play" %% "play"                      % "2.8.21",
+    "uk.gov.hmrc"       %% "bootstrap-backend-play-28" % "5.24.0"
+  )
 
-  val test: Seq[ModuleID] =
-    PlayCrossCompilation.dependencies(
-      shared = Seq(
-        "com.typesafe.play"      %% "play-test"                 % PlayVersion.current % Test,
-        "org.mockito"            % "mockito-core"               % "3.8.0"             % Test
-      ),
-      play28 = Seq(
-        "uk.gov.hmrc"            %% "service-integration-test"  % "1.3.0-play-28"     % Test,
-        "org.scalatestplus.play" %% "scalatestplus-play"        % "5.0.0"             % Test,
-        "com.vladsch.flexmark"   %  "flexmark-all"              % "0.35.10"           % Test
-      )
-    )
+  val play29: Seq[ModuleID] = Seq(
+    "com.typesafe.play" %% "play"                      % "2.9.0",
+    "uk.gov.hmrc"       %% "bootstrap-backend-play-29" % "8.4.0"
+  )
 
-  def apply(): Seq[ModuleID] = compile ++ test
+  val play30: Seq[ModuleID] = Seq(
+    "org.playframework" %% "play"                      % "3.0.0",
+    "uk.gov.hmrc"       %% "bootstrap-backend-play-30" % "8.4.0"
+  )
+
+  val test28: Seq[ModuleID] =
+    Seq(
+      "com.typesafe.play"      %% "play-test"          % "2.8.21",
+      "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0",
+      "com.vladsch.flexmark"   % "flexmark-all"        % "0.36.8"
+    ).map(_ % Test)
+
+  val test29: Seq[ModuleID] =
+    Seq(
+      "com.typesafe.play"      %% "play-test"          % "2.9.1",
+      "org.scalatestplus.play" %% "scalatestplus-play" % "6.0.0",
+      "com.vladsch.flexmark"   % "flexmark-all"        % "0.64.6"
+    ).map(_ % Test)
+
+  val test30: Seq[ModuleID] =
+    Seq(
+      "org.playframework"      %% "play-test"          % "3.0.1",
+      "org.scalatestplus.play" %% "scalatestplus-play" % "7.0.1",
+      "com.vladsch.flexmark"   % "flexmark-all"        % "0.64.6"
+    ).map(_ % Test)
+
 }
