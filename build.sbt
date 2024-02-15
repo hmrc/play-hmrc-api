@@ -26,14 +26,14 @@ lazy val play28 = Project("play-hmrc-api-play-28", file("play-28"))
 
 lazy val play29 = Project("play-hmrc-api-play-29", file("play-29"))
   .settings(
-    crossScalaVersions := Seq(scala2_13),
+    scalaVersion := scala2_13,
     libraryDependencies ++= LibraryDependencies.play29 ++ LibraryDependencies.test29,
     sharedSources
   )
 
 lazy val play30 = Project("play-hmrc-api-play-30", file("play-30"))
   .settings(
-    crossScalaVersions := Seq(scala2_13),
+    scalaVersion := scala2_13,
     libraryDependencies ++= LibraryDependencies.play30 ++ LibraryDependencies.test30,
     sharedSources
   )
