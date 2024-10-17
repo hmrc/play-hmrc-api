@@ -1,8 +1,8 @@
 name := "play-hmrc-api"
 
-val scala2_13 = "2.13.12"
+val scala3_3 = "3.3.4"
 
-ThisBuild / scalaVersion := scala2_13
+ThisBuild / scalaVersion := scala3_3
 ThisBuild / majorVersion := 8
 ThisBuild / isPublicArtefact := true
 ThisBuild / organization := "uk.gov.hmrc"
@@ -11,29 +11,12 @@ ThisBuild / scalacOptions += "-Wconf:src=src_managed/.*:s" // silence all warnin
 lazy val library = (project in file("."))
   .disablePlugins(JUnitXmlReportPlugin)
   .aggregate(
-    play28,
-    play29,
     play30
-  )
-
-lazy val play28 = Project("play-hmrc-api-play-28", file("play-28"))
-  .settings(
-    scalaVersion := scala2_13,
-    libraryDependencies ++= LibraryDependencies.play28 ++ LibraryDependencies.test28,
-    libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always,
-    sharedSources
-  )
-
-lazy val play29 = Project("play-hmrc-api-play-29", file("play-29"))
-  .settings(
-    scalaVersion := scala2_13,
-    libraryDependencies ++= LibraryDependencies.play29 ++ LibraryDependencies.test29,
-    sharedSources
   )
 
 lazy val play30 = Project("play-hmrc-api-play-30", file("play-30"))
   .settings(
-    scalaVersion := scala2_13,
+    scalaVersion := scala3_3,
     libraryDependencies ++= LibraryDependencies.play30 ++ LibraryDependencies.test30,
     sharedSources
   )
