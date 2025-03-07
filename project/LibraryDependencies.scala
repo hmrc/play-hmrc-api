@@ -2,7 +2,7 @@ import sbt._
 
 object LibraryDependencies {
 
-  val bootstrapPlayVersion = "9.5.0"
+  val bootstrapPlayVersion = "9.11.0"
 
   val play30: Seq[ModuleID] = Seq(
     "org.playframework" %% "play"                      % "3.0.0",
