@@ -1,6 +1,6 @@
 name := "play-hmrc-api"
 
-val scala3_3 = "3.3.4"
+val scala3_3 = "3.6.4"
 
 ThisBuild / scalaVersion := scala3_3
 ThisBuild / majorVersion := 8
